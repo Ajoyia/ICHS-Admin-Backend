@@ -1,0 +1,111 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+class TagsSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        DB::table('ivln_tags')->insert([
+            ['name'=>'5th International Symposium on Ultrasound in Anaesthesia','status'=>1],
+            ['name'=>'AEEDC','status'=>1],
+            ['name'=>'AEEDC Advanced Specialty Courses','status'=>1],
+            ['name'=>'AEEDC Dubai World Oral and Maxillofacial Surgery Conference','status'=>1],
+            ['name'=>'AEEDC Dubai World Orthodontic Conference','status'=>1],
+            ['name'=>'AEEDC Education Cairo','status'=>1],
+            ['name'=>'AEEDC Global Education Marrakech','status'=>1],
+            ['name'=>'AEEDC Webinars','status'=>1],
+            ['name'=>'Anaesthesia','status'=>1],
+            ['name'=>'Anti-Smoking','status'=>1],
+            ['name'=>'APBCS','status'=>1],
+            ['name'=>'APGCS','status'=>1],
+            ['name'=>'Aqdar','status'=>1],
+            ['name'=>'ARM','status'=>1],
+            ['name'=>'ARM DRS','status'=>1],
+            ['name'=>'Asia Derma','status'=>1],
+            ['name'=>'Atech World','status'=>1],
+            ['name'=>'AWS','status'=>1],
+            ['name'=>'CPW','status'=>1],
+            ['name'=>'DDTE','status'=>1],
+            ['name'=>'DERMA','status'=>1],
+            ['name'=>'Dermatology Practice in Primary Healthcare Services','status'=>1],
+            ['name'=>'DIAC','status'=>1],
+            ['name'=>'DICM','status'=>1],
+            ['name'=>'DICMS','status'=>1],
+            ['name'=>'DIHAD','status'=>1],
+            ['name'=>'DIHAD Workshop','status'=>1],
+            ['name'=>'DINC','status'=>1],
+            ['name'=>'DS World','status'=>1],
+            ['name'=>'DSCC','status'=>1],
+            ['name'=>'Dubai Core Review','status'=>1],
+            ['name'=>'Dubai Derma Courses','status'=>1],
+            ['name'=>'DUPHAT','status'=>1],
+            ['name'=>'DWDM','status'=>1],
+            ['name'=>'E-Market','status'=>1],
+            ['name'=>'EIOC','status'=>1],
+            ['name'=>'Emergency Radiology Updates','status'=>1],
+            ['name'=>'Emirates 2022 World Stamp Exhibition','status'=>1],
+            ['name'=>'Emirates Derma','status'=>1],
+            ['name'=>'Emirates Forensics','status'=>1],
+            ['name'=>'EOC','status'=>1],
+            ['name'=>'EPSC','status'=>1],
+            ['name'=>'Excellent Products Association','status'=>1],
+            ['name'=>'Export','status'=>1],
+            ['name'=>'FAHR','status'=>1],
+            ['name'=>'FBR Ajman','status'=>1],
+            ['name'=>'Fellowship Course Aesthetic Medicine and Surgery','status'=>1],
+            ['name'=>'Fellowship Course on Dermatology, Aesthetics and Laser','status'=>1],
+            ['name'=>'FOCP','status'=>1],
+            ['name'=>'General Campaigns','status'=>1],
+            ['name'=>'Global Black Impact Summit','status'=>1],
+            ['name'=>'GPMS','status'=>1],
+            ['name'=>'Healthcare Future Summit','status'=>1],
+            ['name'=>'Hemaya Forum','status'=>1],
+            ['name'=>'Home Textile','status'=>1],
+            ['name'=>'IADC','status'=>1],
+            ['name'=>'IALM','status'=>1],
+            ['name'=>'iBRCAF','status'=>1],
+            ['name'=>'ICHS','status'=>1],
+            ['name'=>'IECM','status'=>1],
+            ['name'=>'IFED','status'=>1],
+            ['name'=>'IFM','status'=>1],
+            ['name'=>'IHCM','status'=>1],
+            ['name'=>'IHF World Hospital Congress','status'=>1],
+            ['name'=>'INDEX Hospitality','status'=>1],
+            ['name'=>'Innovation Arabia','status'=>1],
+            ['name'=>'Innovative Family Medicine Networking Lunch','status'=>1],
+            ['name'=>'IUCC','status'=>1],
+            ['name'=>'KDAC','status'=>1],
+            ['name'=>'LifeStyle','status'=>1],
+            ['name'=>'Makkah Dental','status'=>1],
+            ['name'=>'MEDIA','status'=>1],
+            ['name'=>'Mens Health Congress','status'=>1],
+            ['name'=>'Mespen','status'=>1],
+            ['name'=>'NSCF','status'=>1],
+            ['name'=>'Offshore Arabia','status'=>1],
+            ['name'=>'Otology','status'=>1],
+            ['name'=>'PAM','status'=>1],
+            ['name'=>'Ramadan Content Market','status'=>1],
+            ['name'=>'SBOSS','status'=>1],
+            ['name'=>'SIDC','status'=>1],
+            ['name'=>'Testing IT','status'=>1],
+            ['name'=>'TGFM','status'=>1],
+            ['name'=>'UAEGDA','status'=>1],
+            ['name'=>'WACEM','status'=>1],
+            ['name'=>'WaterFalls','status'=>1],
+            ['name'=>'WaterFalls A','status'=>1],
+            ['name'=>'WaterFalls B','status'=>1],
+            ['name'=>'Waterfalls Continuous Education','status'=>1],
+            ['name'=>'ZEE Virtual Event','status'=>1],
+        ]);
+    }
+}

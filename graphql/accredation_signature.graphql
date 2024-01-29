@@ -1,0 +1,54 @@
+
+"Account of a person who utilizes this accredation."
+type AccredationSignature {
+    "Unique primary key."
+    id: ID!
+    model_type: String
+    model_id: Int
+    signature_unique_id:String
+    signature_path: String
+    pdf_path: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_signature(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationSignature @find
+
+    all_accredation_signatures: [AccredationSignature!]! @all
+
+     accredation_signatures(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["signature_path"])
+    ): [AccredationSignature!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationSignature(
+                        model_type: String
+                        signature_unique_id:String
+                        model_id: Int
+                        signature: Upload
+                        signature_type: String
+                        ): String @field(resolver:"App\\GraphQL\\Mutations\\AccredationSignatures\\CreateAccredationSignature")  @inject(context:"user.id",name:"created_by") 
+                        
+    updateAccredationSignature( id: ID!,
+                                model_type: String
+                                signature_unique_id:String
+                                model_id: Int
+                                signature_path: Upload
+                                signature_type: String): String @field(resolver:"App\\GraphQL\\Mutations\\AccredationSignatures\\UpdateAccredationSignature")  @inject(context:"user.id",name:"updated_by") 
+
+    sendAccredationSignatureMail( id: Int
+            model: String
+            type:String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\AccredationSignatures\\sendAccredationSignatureMail")
+
+
+}

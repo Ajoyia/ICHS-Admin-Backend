@@ -1,0 +1,74 @@
+
+type Lecture {
+    id:ID!
+    overview:String
+    content:String
+    file_path:String
+    file:Upload
+    total_minuts:Float
+    section_id:Int
+    course_id:Int
+    lecture_type_id:Int
+    views:Int
+    isMyFavorite:Int @method(name:"isMyFavorite")
+    ivlnLectureSpeaker:[IvlnSpeakersLecture] @hasMany
+    section:IvlnSection @belongsTo
+    course:IvlnCourse @belongsTo
+    speakers:[IvlnSpeaker] @belongsToMany
+    language:Language @belongsTo
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    lecture(
+      id: ID @eq
+    ): Lecture @field(resolver:"App\\GraphQL\\Queries\\Lectures\\FindLecture")
+
+    all_lectures: [Lecture!]! @all
+
+    getThumbnail(
+        url:String
+    ): String @field(resolver:"App\\GraphQL\\Queries\\Lectures\\getThumbnail")
+
+    getFilePath(
+        id:ID
+    ):String @field(resolver:"App\\GraphQL\\Queries\\Lectures\\getFilePath")
+
+    lecturePagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["overview"])
+    ): [Lecture!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createLecture(
+        overview: String!,
+        content:String,
+        file_path:Upload,
+        iframe_path:String,
+        total_minuts:Float,
+        section_id:Int,
+        course_id:Int,
+        lecture_type_id:Int,
+        language_id:Int,
+        status: Int!): Lecture! @guard @field(resolver:"App\\GraphQL\\Mutations\\Lectures\\CreateLectures") @inject(context:"user.id",name:"created_by")
+
+    updateLecture(
+        id: ID!,
+        overview: String!,
+        content:String,
+        file_path:Upload,
+        iframe_path:String
+        total_minuts:Float,
+        section_id:Int,
+        course_id:Int,
+        lecture_type_id:Int,
+        language_id:Int,
+        status: Int): Lecture! @guard @field(resolver:"App\\GraphQL\\Mutations\\Lectures\\UpdateLectures") @inject(context:"user.id",name:"updated_by")
+    deleteLecture(id: ID!): Lecture! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

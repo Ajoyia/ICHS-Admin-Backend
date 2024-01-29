@@ -1,0 +1,38 @@
+type TimeZone {
+    id:ID!
+    utc_offset:String
+    locations:String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    timeZone(
+      "Search by primary key."
+      id: ID @eq
+    ): TimeZone @find
+
+    all_time_zones: [TimeZone!]! @all @orderBy(column: "utc_offset", direction: ASC)
+
+    timeZones(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["utc_offset","locations"])
+    ): [TimeZone!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createTimeZone(
+        utc_offset:String
+        locations:String
+    ): TimeZone! @create  @guard @inject(context:"user.id",name:"created_by" )
+    updateTimeZone(
+        id: ID!
+        utc_offset:String
+        locations:String
+    ): TimeZone! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteTimeZone(id: ID!): TimeZone! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

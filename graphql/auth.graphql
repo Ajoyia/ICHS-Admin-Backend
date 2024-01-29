@@ -1,0 +1,7 @@
+extend type Mutation {
+    login(email: String!, password: String!,system:Int): User!
+}
+
+extend type Query{
+    me:User! @guard @auth
+}

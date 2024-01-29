@@ -1,0 +1,22 @@
+type LoggerActivity{
+    id:ID!
+    instance_type:String
+    instance_method:String
+    log:JSON
+    reference:loggable @morphTo
+    reference_id:Int
+    user:User
+    time:String @method(name: "time")
+    created_at:DateTime
+}
+union loggable=HealthInnovationInitiative | JournalApplication
+
+extend type Query {
+    allLoggerActivities: [LoggerActivity] @all
+
+    allallLoggerActivities(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [LoggerActivity!]! @paginate(defaultCount: 10)
+}
+

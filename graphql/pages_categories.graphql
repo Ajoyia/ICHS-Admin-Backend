@@ -1,0 +1,55 @@
+
+"Account of a person who utilizes this application."
+type PagesCategory {
+    "Unique primary key."
+    id: ID!
+    parent_id: ID
+    name: String
+    template_name: String
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+type PageTemplate {
+    template_name:String
+    template_view:String
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    pagesCategory(
+      "Search by primary key."
+      id: ID @eq
+    ): PagesCategory @Find
+    
+    all_PagesCategories: [PagesCategory!]! @all
+    getPageTemplates: [PageTemplate!]! @field(resolver:"App\\GraphQL\\Queries\\PageCategory\\GetPageTemplate")
+
+    pagesCategories(
+        orderBy: [OrderByClause!]! @orderBy,
+        
+        where:_@whereConditions(columns:["name","template_name"])
+    ): [PagesCategory!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+    createPagesCategories(
+        parent_id: Int
+        name: String
+        template_name: String
+    ): PagesCategory @create @guard @inject(context: "user.id", name: "created_by")
+
+    updatePagesCategories(
+        id: ID!
+        name: String
+        template_name: String
+        parent_id: Int
+    ): PagesCategory! @update @guard @inject(context: "user.id", name: "updated_by")
+
+    deletePagesCategories(id: ID!): PagesCategory! 
+    @delete @guard @inject(context:"user.id",name:"deleted_by")
+} 

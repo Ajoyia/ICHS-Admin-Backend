@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type CMEEducationList {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_education_list(
+      "Search by primary key."
+      id: ID @eq
+    ): CMEEducationList @find
+
+    all_cme_education_lists: [CMEEducationList!]! @all
+
+     cme_education_lists(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMEEducationList!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMEEducationList(name:  String!,status: Int): CMEEducationList! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMEEducationList(id: ID!): CMEEducationList! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMEEducationList(id: ID!,name:String,status: Int): CMEEducationList! @update @guard @inject(context:"user.id",name:"updated_by")
+}

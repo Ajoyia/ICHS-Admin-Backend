@@ -1,0 +1,43 @@
+<?php
+
+namespace App\GraphQL\Mutations\Speaker;
+
+use App\Models\IvlnSpeaker;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
+final class Update
+{
+    /**
+     * @param  null  $_
+     * @param  array{}  $args
+     */
+    public function __invoke($_, array $args)
+    {
+        $discamus = IvlnSpeaker::find($args['id']);
+        if(isset($args['name'])){
+            $discamus->name = $args['name'];
+        }
+        if(isset($args['designation'])){
+            $discamus->designation = $args['designation'];
+        }
+        if(isset($args['status'])){
+            $discamus->status = $args['status'];
+        }
+        if(isset($args['about'])){
+            $discamus->about = $args['about'];
+        }
+        if(isset($args['course_id'])){
+            $discamus->course_id = $args['course_id'];
+        }
+        if(isset($args['image'])){
+            $file = $args['image'];
+            if($file!=null){
+                $discamus->image =  Storage::putFile('/discamus/images',$args['image']);
+            }
+        }
+        $discamus->updated_by = Auth::id();
+        $discamus->save();
+        return $discamus;
+    }
+}

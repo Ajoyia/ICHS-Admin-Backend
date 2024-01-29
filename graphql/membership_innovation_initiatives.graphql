@@ -1,0 +1,35 @@
+
+"Account of a person who utilizes this application."
+type MembershipInnovationInitiative {
+    "Unique primary key."
+    id: ID!
+    name: String
+    membership_id: Int
+    membership: Membership @belongsTo
+    status: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    membership_innovation_initiative(
+      "Search by primary key."
+      id: ID @eq
+    ): MembershipInnovationInitiative @find
+
+    all_membership_innovation_initiatives: [MembershipInnovationInitiative!]! @all
+     membership_innovation_initiatives(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [MembershipInnovationInitiative!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createMembershipInnovationInitiative(name: String,membership_id: Int,status:Int): MembershipInnovationInitiative! @create @guard 
+    deleteMembershipInnovationInitiative(id: ID!): MembershipInnovationInitiative! @delete @guard 
+    updateMembershipInnovationInitiative(id: ID!,name: String,membership_id: Int,status:Int): MembershipInnovationInitiative! @update @guard 
+}

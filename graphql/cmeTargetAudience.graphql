@@ -1,0 +1,32 @@
+type CmeTargetAudience {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    cme_application_target_audience:[CMEApplicationTargetAudience] @hasMany
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cmeTargetAudience(
+      "Search by primary key."
+      id: ID @eq
+    ): CmeTargetAudience @find
+
+    all_cme_target_audience: [CmeTargetAudience!]! @all
+    CmeTargetAudiences(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CmeTargetAudience!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCmeTargetAudience(name:  String!,status:Int): CmeTargetAudience @create  @guard @inject(context:"user.id",name:"created_by")
+    deleteCmeTargetAudience(id: ID!): CmeTargetAudience  @guard @delete @inject(context:"user_id",name:"deleted_by")
+    updateCmeTargetAudience(id: ID!,name:String,status:Int): CmeTargetAudience @update  @guard @inject(context:"user.id",name:"created_by")
+}

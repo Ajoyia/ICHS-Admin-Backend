@@ -1,0 +1,34 @@
+
+type AccredationLocation {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: Int
+    acc_id: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_location(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationLocation @find
+
+    all_accredation_locations: [AccredationLocation!]! @all
+
+    accredation_locations(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [AccredationLocation!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationLocation(name:  String,status: Int,acc_id: Int): AccredationLocation! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteAccredationLocation(id: ID!): AccredationLocation! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateAccredationLocation(id: ID!,name:  String,status: Int,cme_application_id: Int): AccredationLocation! @update @guard @inject(context:"user.id",name:"updated_by")
+}

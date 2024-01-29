@@ -1,0 +1,4 @@
+#import awards.graphql
+#import award_types.graphql
+#import award_nominees.graphql
+#import nominee_votes.graphql

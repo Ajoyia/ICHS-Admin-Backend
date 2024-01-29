@@ -1,0 +1,60 @@
+
+"Account of a person who utilizes this application."
+type AccredationProduct {
+    id:ID!
+    product_id:Int
+    product:Product @belongsTo
+    country_type:CountriesType @belongsTo
+    description:String
+    price:Int
+    country_type_id:Int
+    per_certificate_price:Float
+    tax_group_id:Int
+    is_published:Int
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_product(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationProduct @find
+    all_accredation_products: [AccredationProduct!]! @all
+
+    accredation_products(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["per_certificate_price","price"])
+    ): [AccredationProduct!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationProduct(
+        product_id:Int
+        description:String
+        country_type_id:Int
+        price:Int
+        per_certificate_price:Float
+        tax_group_id:Int
+        is_published:Int
+        status:Int  
+        ): AccredationProduct! @guard @create @inject(context:"user.id",name:"created_by")
+
+    updateAccredationProduct(
+        id: ID!
+        product_id:Int
+        country_type_id:Int
+        description:String
+        price:Int
+        per_certificate_price:Float
+        tax_group_id:Int
+        is_published:Int
+        status:Int): AccredationProduct! @guard @update @inject(context:"user.id",name:"updated_by")
+
+    deleteAccredationProduct(id: ID!): AccredationProduct! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

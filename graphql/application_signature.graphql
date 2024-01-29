@@ -1,0 +1,54 @@
+
+"Account of a person who utilizes this application."
+type ApplicationSignature {
+    "Unique primary key."
+    id: ID!
+    model_type: String
+    model_id: Int
+    signature_unique_id:String
+    signature_path: String
+    pdf_path: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    application_signature(
+      "Search by primary key."
+      id: ID @eq
+    ): ApplicationSignature @find
+
+    all_application_signatures: [ApplicationSignature!]! @all
+
+     application_signatures(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["signature_path"])
+    ): [ApplicationSignature!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createApplicationSignature(
+                        model_type: String
+                        signature_unique_id:String
+                        model_id: Int
+                        signature: Upload
+                        signature_type: String
+                        ): String @field(resolver:"App\\GraphQL\\Mutations\\ApplicationSignatures\\CreateApplicationSignature")  @inject(context:"user.id",name:"created_by") 
+                        
+    updateApplicationSignature( id: ID!,
+                                model_type: String
+                                signature_unique_id:String
+                                model_id: Int
+                                signature_path: Upload
+                                signature_type: String): String @field(resolver:"App\\GraphQL\\Mutations\\ApplicationSignatures\\UpdateApplicationSignature")  @inject(context:"user.id",name:"updated_by") 
+
+    sendSignatureMail( id: Int
+            model: String
+            type:String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\ApplicationSignatures\\sendSignatureMail")
+
+
+}

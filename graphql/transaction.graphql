@@ -1,0 +1,24 @@
+type TransactionDetail{
+    id:ID
+    user:User
+    model_type:String
+    model_id:Int
+    method:String
+    card_no:String
+    note:String
+    payment_status:String
+    status:Int
+    invoice_id:Int
+    invoice:Invoice @belongsTo
+    receipt_id:Int
+    total_amount:Float
+    total_amount_in_usd:Float
+    deletedBy:User
+    updatedBy:User
+    created_at:DateTime
+    updated_at:DateTime
+}
+extend type Query {
+    trancastions:[TransactionDetail!] @all
+    dashboard:JSON @field(resolver:"App\\GraphQL\\Queries\\Transactions\\Dashboard")
+}

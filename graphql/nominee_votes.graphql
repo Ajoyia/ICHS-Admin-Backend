@@ -1,0 +1,59 @@
+"Account of a person who utilizes this application."
+type NomineeVote {
+    "Unique primary key."
+    id: ID!
+    award_id: Int
+    nominee_id: Int
+    award_type_id:Int
+    voted_by: Int
+    award:Award @belongsTo
+    award_type:AwardType @belongsTo
+    nominee:AwardNominee @belongsTo
+    votedBy: User @belongsTo
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}
+
+extend type Query {
+    
+    nominee_votes(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["award_id"])
+    ): [NomineeVote!]! @paginate(defaultCount: 10)
+
+    all_nominee_votes:[NomineeVote!]! @all
+
+    nominee_vote(id: ID @eq): NomineeVote @find
+
+     get_particular_nominee_vote(award_id: Int @eq,award_type_id:Int @eq,voted_by:Int @eq ): NomineeVote @find
+
+
+}
+
+extend type Mutation {
+    createNomineeVote(
+        award_id: Int
+        nominee_id: Int
+        award_type_id:Int
+        voted_by: Int
+    ): NomineeVote @guard @create @inject(context: "user.id", name: "created_by")
+
+    updateNomineeVote(
+        id: ID!
+        award_id: Int
+        nominee_id: Int
+        award_type_id:Int
+        voted_by: Int
+    ): NomineeVote @guard @update @inject(context: "user.id", name: "updated_by")
+    
+    deleteNomineeVote(id: ID!): NomineeVote
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+}
+
+

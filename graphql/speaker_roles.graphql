@@ -1,0 +1,26 @@
+
+type SpeakerRole {
+    id:ID!
+    name:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    SpeakersRole(
+      id: ID @eq
+    ): SpeakerRole @find
+
+    all_SpeakersRole: [SpeakerRole!]! @all
+}
+
+extend type Mutation {
+    createSpeakerRole(name: String!,status: Int!): SpeakerRole! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateSpeakerRole(id: ID!,name: String,status: Int): SpeakerRole! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteSpeakerRole(id: ID!): SpeakerRole! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

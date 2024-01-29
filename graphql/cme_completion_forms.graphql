@@ -1,0 +1,60 @@
+
+type CMECompletionForm {
+    "Unique primary key."
+    id: ID!
+    cme_application_id: Int
+    credit_hour:Int
+    cme_validation: String
+    pdf_path:String
+    commercial_independence: String
+    evaluation_summary: String
+    commercial_support: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    completed_forms(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["id","updated_at"])
+    ): [CMEApplication!]! @paginate(builder: "App\\GraphQL\\Queries\\CMECompletionForm\\GetCompletionCMEApplication")
+    cme_completion_form(
+      "Search by primary key."
+      id: ID @eq
+    ): CMECompletionForm @find
+
+    
+
+    all_cme_completion_forms: [CMECompletionForm!]! @all
+
+    cme_completion_forms(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["activity_title"])
+    ): [CMECompletionForm!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMECompletionForm(
+        cme_application_id: Int
+        credit_hour:Int
+        cme_validation: String
+        commercial_independence: String
+        evaluation_summary: String
+        commercial_support: String
+        xls_file: Upload): String @guard @field(resolver:"App\\GraphQL\\Mutations\\CMECompletionForm\\createCMECompletionForm") @inject(context:"user.id",name:"created_by")  @inject(context:"user.id",name:"updated_by")
+   
+    deleteCMECompletionForm(id: ID!): CMECompletionForm! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateCMECompletionForm(
+        id: ID!
+        cme_application_id: Int
+        cme_validation: String
+        commercial_independence: String
+        evaluation_summary: String
+        commercial_support: String
+       ): CMECompletionForm! @update @guard @inject(context:"user.id",name:"updated_by")
+}

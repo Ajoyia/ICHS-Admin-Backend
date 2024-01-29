@@ -1,0 +1,36 @@
+
+type IvlnSection {
+    id:ID!
+    name:String
+    content:String
+    course_id:Int
+    status:Int
+    ivlnLectures:[Lecture] @hasMany
+    sectionFavorite:[IvlnFavorite]@morphMany
+    isMyFavorite:Int @method(name:"isMyFavorite")
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    Ivlnsection(
+      id: ID @eq
+    ): IvlnSection @find
+
+    all_Ivlnsection: [IvlnSection!]! @all
+
+    IvlnSectionPagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [IvlnSection!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createSection(name: String!,content: String,course_id: Int!,status: Int): IvlnSection! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateSection(id: ID!,name: String,content: String,course_id: Int,status: Int): IvlnSection! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteSection(id: ID!): IvlnSection! @guard @inject(context:"user.id",name:"deleted_by") @field(resolver:"App\\GraphQL\\Mutations\\IVLNSections\\DeleteSection")
+
+}

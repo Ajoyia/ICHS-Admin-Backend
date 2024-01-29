@@ -1,0 +1,41 @@
+
+type IvlnSupporter {
+    id:ID!
+    name:String
+    image:String
+    course_id:Int
+    courses:IvlnCourse @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    ivlnSupporter(
+      id: ID @eq
+    ): IvlnSupporter @find
+
+    all_IvlnSupporter: [IvlnSupporter!]! @all
+
+    IvlnSupporterPagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","designation"])
+    ): [IvlnSupporter!]! @paginate(defaultCount: 10)
+
+}
+
+extend type Mutation {
+    createSupporter(
+        name: String!,
+        course_id:Int,
+        image:Upload): IvlnSupporter! @guard @field(resolver:"App\\GraphQL\\Mutations\\Supporter\\Create")
+    updateSupporter(
+        id: ID!,
+        name: String,
+        course_id:Int,
+        image:Upload): IvlnSupporter!@guard @field(resolver:"App\\GraphQL\\Mutations\\Supporter\\Update")
+    deleteSupporter(id: ID!): IvlnSupporter! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

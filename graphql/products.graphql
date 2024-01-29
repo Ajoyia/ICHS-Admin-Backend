@@ -1,0 +1,47 @@
+type AllProductLink{
+    link_products:JSON
+}
+
+type Product {
+    id:ID!
+    link_product: Int
+    name:String!
+    packages:[Package] @hasMany
+    description: String
+    is_published: Int
+    status:Int
+    productCountryTypes:[ProductCountryType]@hasMany (type: "paginator")
+    countryTypes:[ProductCountryType]@hasMany
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    product(
+      id: ID @eq
+    ): Product @find
+
+    condition_based_product(
+      link_product: Int @eq
+    ): [Product!]! @all
+
+    all_products: [Product!]! @all
+    products_links: AllProductLink @field(resolver:"App\\GraphQL\\Queries\\Products\\GetAllProductLinks")
+    getMembershipPackages(user_id:Int!): String @field(resolver:"App\\GraphQL\\Queries\\Memberships\\MembershipPackages")
+    products(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","description"])
+    ): [Product!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createProduct(name: String!,link_product: Int,description: String,status: Int!,is_published: Int): Product! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateProduct(id: ID!,name: String,link_product: Int,description: String,status: Int,is_published: Int): Product! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteProduct(id: ID!): Product! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}
+
+#import countries_type.graphql
+#import countries_types_listing.graphql

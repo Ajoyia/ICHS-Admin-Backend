@@ -1,0 +1,105 @@
+type JournalApplication {
+    "Unique primary key."
+    id: ID!
+    user_id:Int
+    user:User @belongsTo
+    status_id:Int
+    form_type_id: Int!
+    file_path: String
+    publish_date:DateTime
+    keywords: String
+    total_no_pages: String
+    no_of_reviews_requested:Int
+    transactions:[TransactionDetail] @morphMany
+
+    price: String
+    remarks:[Remark] @morphMany
+    hii_authors(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name"])):[HIIAuthor] @morphMany (type: "paginator")
+    all_authors:[HIIAuthor] @morphMany
+    is_research_faculty_approved: String
+    is_approved_london_office: String
+    final_submisssion: String
+    final_approved_london_office: String
+    formType:JournalType @belongsTo
+    journalContent:JournalApplicationContent @hasOne
+    loggerActivities:[LoggerActivity] @morphMany
+    featured:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+input UpdateJournalApplicationInput {
+    id: ID!
+    form_type_id: Int
+    is_research_faculty_approved: Int
+    status_id:Int
+    is_approved_london_office:Int
+    featured:Int
+}
+
+extend type Query {
+
+    JournalApplication(
+      "Search by primary key."
+      id: ID
+      admin:Boolean
+    ): JournalApplication  @field( resolver:"App\\GraphQL\\Queries\\JICHS\\findJICHS")
+
+    getViewsJournal(id:ID):Int @field( resolver:"App\\GraphQL\\Queries\\JICHS\\GetViews")
+
+    published_journal(
+        status_id:Int @eq
+    ):[JournalApplication!]! @all
+
+    getPublishedJICHS: [JournalApplication]  @field( resolver:"App\\GraphQL\\Queries\\JICHS\\getPublishedJICHS")
+    getAllPublishedJICHS(search:String sorting:String type:Int data_count:Int): [JournalApplication]  @field( resolver:"App\\GraphQL\\Queries\\JICHS\\getAllPublishedJICHS")
+
+    journal_pending_approvals(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["updated_by","id"])
+    ): [JournalApplication!]! @paginate(builder: "App\\GraphQL\\Queries\\JICHS\\PendingJournals")
+
+
+    all_JournalApplications: [JournalApplication!]! @all
+
+    JournalApplications(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["user"], handler: "App\\Jichs")
+    ): [JournalApplication!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+
+    completeJournalsApplication(id:ID!): String @guard @field(resolver:"App\\GraphQL\\Mutations\\Journals\\completeJournalApplication")
+
+    createJournalApplication(form_type_id: Int, user_id:Int,featured:Int):
+        JournalApplication! @create  @guard @inject(context:"user.id",name:"created_by")
+
+    updateJournalApplication(input: UpdateJournalApplicationInput! @spread): JournalApplication! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteJournalApplication(id: ID!): JournalApplication! @guard @delete @inject(context:"user.id",name:"deleted_by")
+
+
+    secondPaymentJICHS(
+        id:ID!
+        price:Int
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\Journals\\secondPaymentJICHS")
+
+    reviewRequiredJICHS(
+        id:ID!
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\Journals\\ReviewRequiredJICHS")
+
+
+    uploadJournalDocument(
+        id:ID!
+        file_path:Upload
+        form_type_id:Int
+    ): Package! @guard @field(resolver:"App\\GraphQL\\Mutations\\Journals\\UploadPDF")
+}

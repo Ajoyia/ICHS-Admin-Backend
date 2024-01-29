@@ -1,0 +1,31 @@
+
+type EducationGapType {
+    id:ID!
+    name:String!
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    education_gap_type(
+      id: ID @eq
+    ): EducationGapType @find
+
+    all_education_gap_types: [EducationGapType!]! @all
+
+    education_gap_type(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["name"])
+    ): [EducationGapType!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createEducationGapType(name: String!,status: Int!): EducationGapType! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateEducationGapType(id: ID!,name: String,status: Int): EducationGapType! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteEducationGapType(id: ID!): String @guard @inject(context:"user.id",name:"deleted_by") @field(resolver:"App\\GraphQL\\Mutations\\EducationalGap\\Delete")
+}

@@ -1,0 +1,71 @@
+
+"Account of a person who utilizes this application."
+type MenuItem {
+    "Unique primary key."
+    id: ID!
+    name: String
+    link: String
+    icon: String
+    page_type: String
+    static_page_id: Int
+    parent_id: String
+    type_id: Int
+    order: Int
+    status: Int
+    children:[MenuItem] @hasMany
+    static_page:StaticPage @belongsTo
+    menu_type:MenuType @belongsTo
+    menu_items: MenuItem @belongsTo
+    
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    menu_item(
+      "Search by primary key."
+      id: ID @eq
+    ): MenuItem @find
+
+    "List multiple users."
+
+    all_menu_items: [MenuItem!]! @all
+
+    # menu_items(
+    #     orderBy: [OrderByClause!]! @orderBy,
+    #     where:_@whereConditions(columns:["name","link","menu_type.name"])
+    # ): [MenuItem!]! @paginate(defaultCount: 10)
+
+    menu_items(
+        orderBy: [OrderByClause!]! @orderBy,
+        where: _ @whereConditions(
+                columns: [ "name", "link", "menu_type_name" ]
+                handler: "App\\SearchMenuItems"
+            )
+    ): [MenuItem!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createMenuItem(
+        name:  String!
+        link: String
+        icon: Upload
+        static_page_id: String
+        parent_id: String
+        type_id: String
+        order: String
+        page_type: String
+        status:Int
+    ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\MenuItems\\CreateMenuItem")
+    deleteMenuItem(id: ID!): String  @guard @field(resolver:"App\\GraphQL\\Mutations\\MenuItems\\DeleteMenuItem")
+    updateMenuItem(
+        id: ID!
+        name:  String!
+        link: String
+        icon: Upload
+        static_page_id: String
+        parent_id: String
+        type_id: String
+        order: String
+        page_type: String
+        status:Int
+    ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\MenuItems\\UpdateMenuItem")
+}

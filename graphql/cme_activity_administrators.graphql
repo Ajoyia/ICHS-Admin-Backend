@@ -1,0 +1,116 @@
+
+"Account of a person who utilizes this application."
+type CMEActivityAdministrator {
+    "Unique primary key."
+    id: ID!
+    other_specialty: String
+    salutation_id: Int
+    cme_application_id: Int
+    first_name: String
+    last_name: String
+    email: String
+    organization: String
+    designation: String
+    experience: String
+    application_signature:ApplicationSignature @morphOne
+    mobile_no: String
+    address: String
+    city_id: Int
+    state_id: Int
+    country_id: Int
+    is_policy_agreement_email_sent:Int
+    policy_agreement_email_sent_date:DateTime
+    is_policy_agreement_signed:Int
+    policy_agreement_signed_date:DateTime
+    speciality_ids:[String]
+    cme_role:CMERole @belongsTo
+    pin_code:  String
+    role_id: Int
+    status: Int
+    role_other: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_activity_administrator(
+      "Search by primary key."
+      id: ID @eq
+    ): CMEActivityAdministrator @find
+
+    all_cme_activity_administrators: [CMEActivity!]! @all
+
+     cme_activity_administrators(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name","mobile_no","email"])
+    ): [CMEActivityAdministrator!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+
+    createActivityAdministratorSpeciality(activity_id: Int, speciality_id: [String!]!): String
+        @field(resolver: "App\\GraphQL\\Mutations\\CMEActivityAdministrator\\CreateSpecialty")
+
+    createCMEActivityAdministrator(
+        other_specialty:String
+        salutation_id: Int
+        cme_application_id: Int
+        first_name: String
+        last_name: String
+        email: String
+        organization: String
+        mobile_no: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        is_policy_agreement_email_sent:Int
+        policy_agreement_email_sent_date:DateTime
+        is_policy_agreement_signed:Int
+        policy_agreement_signed_date:DateTime
+        pin_code:  String
+        role_other: String
+        role_id: Int
+        designation:String
+        experience:String
+        status: Int): CMEActivityAdministrator! @create @guard  @inject(context:"user.id",name:"created_by")
+
+    deleteCMEActivityAdministrator(id: ID!): CMEActivityAdministrator! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateCMEActivityAdministratorSigned(
+        id: ID!
+        is_policy_agreement_signed:Int
+        ): String 
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CMEActivityAdministrator\\updateCMEActivityAdministratorSigned"
+        )
+
+    updateCMEActivityAdministrator(
+        other_specialty:String
+        id: ID!
+        salutation_id: Int
+        cme_application_id: Int
+        first_name: String
+        last_name: String
+        email: String
+        organization: String
+        mobile_no: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        is_policy_agreement_email_sent:Int
+        policy_agreement_email_sent_date:DateTime
+        is_policy_agreement_signed:Int
+        policy_agreement_signed_date:DateTime
+        pin_code:  String
+        role_id: Int
+        role_other: String
+        designation:String
+        experience:String
+        status: Int): CMEActivityAdministrator! @update @guard @inject(context:"user.id",name:"updated_by")
+}

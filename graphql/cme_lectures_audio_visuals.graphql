@@ -1,0 +1,34 @@
+
+type CMELectureAudioVisual {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: Int
+    cme_lecture: [CMELecture] @hasMany
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_lecture_audio_visual(
+      "Search by primary key."
+      id: ID @eq
+    ): CMELectureAudioVisual @find
+
+    all_cme_lecture_audio_visuals: [CMELectureAudioVisual!]! @all
+
+    cme_lecture_audio_visuals(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMELectureAudioVisual!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMELectureAudioVisual(name:  String,status: Int): CMELectureAudioVisual! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMELectureAudioVisual(id: ID!): CMELectureAudioVisual! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMELectureAudioVisual(id: ID!,name:  String,status: Int): CMELectureAudioVisual! @update @guard @inject(context:"user.id",name:"updated_by")
+}

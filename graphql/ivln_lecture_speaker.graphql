@@ -1,0 +1,73 @@
+type IvlnSpeakersLecture {
+    id: ID!
+    lecture_id: Int
+    role_id: Int
+    speaker_id: Int
+    status: Int
+    role:SpeakerRole @belongsTo
+    lecture:Lecture @belongsTo
+    speaker:IvlnSpeaker @belongsTo
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Query {
+    ivln_speakers_lecture(id: ID @eq): IvlnSpeakersLecture @find
+
+    all_ivln_speakers_lecture: [IvlnSpeakersLecture!]! @all
+
+     getSpeakerLectures(
+        lecture_id: Int!
+    ): String
+        @guard
+        @inject(context: "user.id", name: "created_by")
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Lectures\\GetSpeakerLectures"
+        )
+
+    getLectureRole(
+        lecture_id: Int!
+    ): String
+        @guard
+        @inject(context: "user.id", name: "created_by")
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Lectures\\GetLectureRole"
+        )
+}
+extend type Mutation {
+    createIvlnSpeakersLecture(
+        lecture_id: Int!
+        role_id: Int!
+        speaker_id: Int!
+    ): IvlnSpeakersLecture
+        @guard
+        @create
+        @inject(context: "user.id", name: "created_by")
+
+    deleteIvlnSpeakersLecture(
+        lecture_id: Int!
+        speaker_id: Int!
+        role_id: Int!
+        status: Int!
+    ): String
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Lectures\\DeleteSpeakerLectures"
+        )
+     deleteAttachedSpeakersToLecture(
+        lecture_id: Int!
+        speaker_id: Int!
+        role_id: Int
+    ): String
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Lectures\\DeleteSpeakerLectures"
+        )
+
+}

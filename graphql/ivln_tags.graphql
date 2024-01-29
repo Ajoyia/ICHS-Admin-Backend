@@ -1,0 +1,39 @@
+type IvlnTag{
+    id:ID!
+    name:String
+    status:Int
+    ivlnCourses:[IvlnCourse!] @belongsToMany
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    IvlnTag(
+      id: ID @eq
+    ): IvlnTag @find
+
+    all_IvlnTags: [IvlnTag!]! @all
+
+    IvlnTags(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [IvlnTag!]! @paginate(defaultCount: 10)
+
+}
+
+extend type Mutation {
+    createIvlnTag(
+        name: String!,
+        status: Int,
+        ): IvlnTag! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateIvlnTag(
+        id: ID!,
+        name: String,
+        status: Int
+        ): IvlnTag! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteIvlnTag(id: ID!): IvlnTag! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

@@ -1,0 +1,26 @@
+
+type CountriesTypesListing {
+    id:ID!
+    country_id:Int
+    country_type_id:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    country_type:CountriesType @belongsTo   
+    country:Country @belongsTo
+}
+
+extend type Query {
+    country_types_listing(
+      id: ID @eq
+    ): CountriesTypesListing @find
+
+    all_country_types_listing: [CountriesTypesListing!]! @all
+}
+extend type Mutation {
+    createCountriesTypesListing(country_id: [Int],country_type_id: Int): String @guard @inject(context:"user.id",name:"created_by") @field(resolver:"App\\GraphQL\\Mutations\\CountryTypes\\UpdateCountries")
+    deleteCountriesTypesListing(country_id: Int!,country_type_id:Int!): String @guard @inject(context:"user.id",name:"deleted_by") @field(resolver:"App\\GraphQL\\Mutations\\CountryTypes\\DeleteCountries")
+}

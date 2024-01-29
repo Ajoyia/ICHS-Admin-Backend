@@ -1,0 +1,53 @@
+type IvlnAttendanceUser{
+    id:ID!
+    lecture:Lecture
+    user:User
+    duration:Float
+    time_watched:Float
+    total_points:Float
+    points:Float
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    ivlnAttendanceUser(
+      id: ID @eq
+    ): IvlnAttendanceUser @find
+
+    ivlnAttendanceUsers: [IvlnAttendanceUser!]! @all
+    attendaceOfACourse(
+        course:ID
+        orderColmn: String
+        order:String
+        search:String
+    ):[IvlnAttendanceUser!] @field(resolver:"App\\GraphQL\\Queries\\IVLNAttedanceUser\\attendaceOfACourse")
+}
+extend type Mutation {
+    createIvlnAttendanceUser(
+        lecture_id:Int
+        user_id:Int
+        duration:Float
+        time_watched:Float
+        total_points:Float
+        points:Float
+        status:Int
+        ): IvlnAttendanceUser! @guard @field(resolver:"App\\GraphQL\\Mutations\\IVLNAttedanceUser\\markUserAttendance")
+    updateIvlnAttendanceUser(
+        id: ID!
+        lecture_id:Int
+        user_id:Int
+        duration:Float
+        time_watched:Float
+        total_points:Float
+        points:Float
+        status:Int
+        ): IvlnAttendanceUser! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteIvlnAttendanceUser(id: ID!): IvlnAttendanceUser! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}
+

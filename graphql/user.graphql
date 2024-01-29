@@ -1,0 +1,305 @@
+"Account of a person who utilizes this application."
+type User {
+    "Unique primary key."
+    id: ID!
+    salutation: Salutation @belongsTo
+    first_name: String
+    last_name: String
+    email: String!
+    email_verified_at: String
+    password: String
+    other_specialty:String
+    organization: String
+    mobile_no: String
+    country_code: String
+    membership_unique_id: String
+    address: String
+    image: String
+    university: String
+    department: String
+    status: Boolean
+    city_id: Int
+    state_id: Int
+    job_title: String
+    parent_id: Int
+    is_accept: Boolean
+    nationality_id: Int
+    city: City @belongsTo
+    state: State @belongsTo
+    country: Country @belongsTo
+    nationality: Nationality @belongsTo
+    policies: [Policy]! @belongsToMany
+    health_innovation_initiativies(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["id","updated_at"])):[HealthInnovationInitiative] @hasMany (type: "paginator")
+    grants(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["id","updated_at"])):[Grant] @hasMany (type: "paginator")
+    volunteers(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["id","updated_at"])):[Volunteer] @hasMany (type: "paginator")
+
+    accredation_applications(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["id","updated_at"])):[AccredationApplication] @hasMany (type: "paginator")
+
+    journals(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["id","updated_at"])):[JournalApplication] @hasMany (type: "paginator")
+    cme_applications(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name","email"])):[CMEApplication] @hasMany (type: "paginator")
+    chapters(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["name","is_approved_by_admin"])):[Chapter] @hasMany (type: "paginator")
+    notAssignedPolicies: [Policy]! @method(name: "notAssignedPolicies")
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    userExperiences(
+        orderBy: [OrderByClause!]!
+            @orderBy(relations: [{ relation: "jobTitle", columns: ["name"] }])
+        where: _
+            @whereConditions(
+                columns: ["name", "company_name", "jobs_responsibility"]
+                handler: "App\\searchUserExperience"
+            )
+    ): [UserExperience] @hasMany
+    token: String
+    roleHourse: RoleHourse @belongsTo
+    specialty: [Specialty!]! @belongsToMany
+    speciality_ids:[String!]!
+    membership:MembershipType @belongsTo
+    memberships:Membership @hasOne
+    memberships_all:Membership @hasOne
+    allMemberships:Membership @hasOne
+    ivlnAttendance(orderBy: [OrderByClause!] @orderBy):[IvlnAttendanceUser] @hasMany (type: "paginator")
+    trancastions(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["model_type","created_at","total_amount"])):[TransactionDetail] @hasMany (type: "paginator")
+    ivlnFavorites:[IvlnFavorite] @hasMany
+    timeZone:TimeZone @belongsTo
+    degree_file_path:String
+    require_update:Int
+    alliances:JSON @method(name:"getAlliances")
+    type:Int
+    created_at: DateTime
+    updated_at: DateTime
+}
+type Authentication{
+    status: Int
+    message: String
+}
+input ResetPasswordUrlInput {
+    url: String! @rules(apply: ["url"])
+}
+
+type UpdatePasswordResponse {
+    status: UpdatePasswordStatus!
+}
+enum UpdatePasswordStatus {
+    """PASSWORD_UPDATED"""
+    PASSWORD_UPDATED
+}
+
+type ForgotPasswordResponse {
+    status: ForgotPasswordStatus!
+    message: String
+}
+
+type ResetPasswordResponse {
+    status: String!
+    message: String
+}
+
+enum ResetPasswordStatus {
+    """PASSWORD_RESET"""
+    PASSWORD_RESET
+}
+
+enum ForgotPasswordStatus {
+    """EMAIL_SENT"""
+    EMAIL_SENT
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    user(
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+        "Search by email address."
+        email: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find
+
+    all_users: [User!]! @all
+
+    users(
+        orderBy: [OrderByClause!]! @orderBy
+        where: _ @whereConditions(columns: ["first_name", "last_name", "email"])
+    ): [User!]! @paginate(defaultCount: 10)
+    getPayment(email: String, amount: Float): String
+        @field(resolver: "App\\GraphQL\\Queries\\Users\\getPayment")
+    favorites:String @field(resolver: "App\\GraphQL\\Queries\\Users\\GetFavorites")
+    userTypes:JSON @field(resolver: "App\\GraphQL\\Queries\\Users\\GetUserTypes")
+    members(search:String,nationalities:JSON,specialities:JSON alliance:Int, chapter:Int):[User!] @field(resolver: "App\\GraphQL\\Queries\\Users\\GetMembers")
+
+}
+
+extend type Mutation {
+    forgotUserPassword(
+        email: String! @rules(apply: ["email"])
+        reset_password_url: ResetPasswordUrlInput
+        client:String!
+    ): ForgotPasswordResponse!
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\ForgetPassword")
+
+    resetPassword(
+        email: String @rules(apply: ["email"])
+        token: String!
+        password: String! @rules(apply: ["confirmed"])
+        password_confirmation: String!
+    ): ResetPasswordResponse!
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\ResetPassword")
+
+    updatePassword(
+        current_password: String
+        password: String @rules(apply: ["confirmed"])
+        password_confirmation: String
+    ): UpdatePasswordResponse!
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\UpdatePassword")
+
+    tokenAuthentication(token: String): Authentication
+        @field(resolver: "App\\GraphQL\\Mutations\\UserEmailVerify")
+
+    createUserSpeciality(user_id: Int!, speciality_id: [String!]!): String
+        @field(resolver: "App\\GraphQL\\Mutations\\SpecialityResolver")
+
+    UserEmailVerify(email: String): String
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\EmailVerify")
+
+    createUser(
+        other_specialty:String
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String! @rules(apply: ["bail", "email", "unique:users,email"])
+        password: String
+        organization: String
+        mobile_no: String
+        membership_unique_id: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        nationality_id: Int
+        job_title: String
+        time_zone_id:Int
+        send_creds:Boolean
+        status: Int
+    ): User @guard @field(resolver: "App\\GraphQL\\Mutations\\Users\\CreateUserMutation")
+    userCreate(
+        other_specialty:String
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String! @rules(apply: ["bail", "email", "unique:users,email"])
+        password: String! @hash
+        organization: String
+        mobile_no: String
+        membership_unique_id: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        nationality_id: Int
+        job_title: String
+        time_zone_id:Int
+        status: Boolean
+    ): User @create
+    deleteUser(id: ID!): User
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+    updateUser(
+        other_specialty:String
+        id: ID!
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String @rules(apply: ["bail", "email", "unique:users,email"])
+        password: String
+        organization: String
+        university: String
+        department:String
+        mobile_no: String
+        membership_unique_id: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        nationality_id: Int
+        job_title: String
+        speciality_id: Int
+        role_hourse_id: Int
+        time_zone_id:Int
+        status: Int
+        image: Upload
+        type:Int
+    ): User @guard @field(resolver: "App\\GraphQL\\Mutations\\Users\\UpdateUser")
+    changeEmail(
+        id: ID!
+        email: String @rules(apply: ["bail", "email", "unique:users,email"])
+    ): User @guard @field(resolver: "App\\GraphQL\\Mutations\\Users\\ChangeEmail")
+
+    updateUserPolicies(policies: [Int]!, user_id: Int!): String
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\UpdateUserPolicies")
+    unassignUserPolicy(policy: Int!, user: Int!): String
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\unassignUserPolicy")
+    updateMemberUser(
+        user_id: Int
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String
+        password: String
+        organization: String
+        mobile_no: String
+        country_code:String
+        membership_unique_id: String
+        address: String
+        university: String
+        department: String
+        city_id: Int
+        country_code:String
+        user_experiences:String
+        state_id: Int
+        country_id: Int
+        nationality_id: Int
+        job_title: String
+        speciality_id: [String!]!
+        role_hourse_id: Int
+        status: Boolean
+        user_experiences: String
+
+    ): String
+        @guard
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Memberships\\UpdateMembershipUser"
+        )
+
+    UserPay(
+        package:Int
+        promo_code_id:Int
+        membership_id:Int
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\UserPayment")
+    changePassword(
+        id:ID!
+        currentPassword:String
+        newPassword:String
+        cNewPassword:String
+    ):String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\Users\\ChangePassword")
+}
+
+#import cities.graphql
+#import countries.graphql
+#import nationality.graphql
+#import states.graphql
+#import salutations.graphql

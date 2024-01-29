@@ -1,0 +1,46 @@
+type TagKeyWord {
+    id: ID!
+    title: String
+    keywords: String
+    description: String
+    page_slug: String
+    page_id: Int
+    created_by: Int
+    updated_by: Int
+    deleted_by: Int
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Query {
+    all_tag_keyword: [TagKeyWord!]! @all
+    tag_keyword(id: ID @eq): TagKeyWord @find
+    tag_keywords(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["title","keywords","description"])
+    ): [TagKeyWord!]! @paginate(defaultCount: 10)
+    allfrontEndPages:JSON @field(resolver:"App\\GraphQL\\Queries\\FrontEndPages")
+    get_tag_keyword(page_slug: String @eq): TagKeyWord @find
+}
+
+extend type Mutation {
+    createTagKeyWord(
+        ,title: String
+        ,keywords: String
+        ,description: String
+        ,page_slug: String
+        ,page_id: Int
+        ): TagKeyWord @create
+
+
+    updateTagKeyWord(id: ID!,
+        ,title: String
+        ,keywords: String
+        ,description: String
+        ,page_slug: String
+        ,page_id: Int
+        ): TagKeyWord @update
+
+   deleteTagKeyWord(id: ID!): TagKeyWord @delete
+}

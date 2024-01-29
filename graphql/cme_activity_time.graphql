@@ -1,0 +1,22 @@
+type CMEActivityTime{
+    id:ID!
+    start_time: DateTime
+    end_time: DateTime
+    CMEApplication:CMEApplication @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Mutation{
+    createActivityTime(
+        cme_application_id:ID!
+        start_time: DateTime
+        end_time: DateTime
+    ):String @guard @field(resolver:"App\\GraphQL\\Mutations\\CMEActivityTime\\createCMEActivityTime")
+
+    deleteActivityTime(id: ID!): CMEActivityTime! @delete @guard @inject(context:"user.id",name:"deleted_by")
+}

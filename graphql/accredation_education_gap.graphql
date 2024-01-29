@@ -1,0 +1,47 @@
+
+type AccredationEducationalGap {
+    id:ID!
+    education_gap_type_id:Int
+    specific_areas:String
+    objectives:String
+    improvements:String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    accredation_education_gap(
+      id: ID @eq
+    ): AccredationEducationalGap @find
+
+    all_accredation_education_gaps: [AccredationEducationalGap!]! @all
+
+    accredation_education_gaps(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["name"])
+    ): [AccredationEducationalGap!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationEducationalGap(
+        education_gap_type_id: Int!
+        acc_application_id: Int
+        specific_areas:String
+        objectives:String
+        improvements:String
+    ): AccredationEducationalGap! @create @guard @inject(context:"user.id",name:"created_by")
+
+    updateAccredationEducationalGap(
+        id: ID!
+        education_gap_type_id: Int!
+        acc_application_id: Int
+        specific_areas:String
+        objectives:String
+        improvements:String
+    ): AccredationEducationalGap! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteAccredationEducationalGap(id: ID!): AccredationEducationalGap! @delete @guard @inject(context:"user.id",name:"deleted_by")
+}

@@ -1,0 +1,29 @@
+
+"Account of a person who utilizes this application."
+type MenuType {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    menu_items:[MenuItem] @hasMany
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    menu_type(
+      "Search by primary key."
+      id: ID @eq
+    ): MenuType @find
+
+    all_menu_types: [MenuType!]! @all
+
+    menu_types(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [MenuType!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createMenuType(name:  String!,status: String!): String @guard @field(resolver:"App\\GraphQL\\Mutations\\MenuTypes\\CreateMenuType")          
+    deleteMenuType(id: ID!): String  @guard @field(resolver:"App\\GraphQL\\Mutations\\MenuTypes\\DeleteMenuType")
+    updateMenuType(id: ID!,name:String,status: String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\MenuTypes\\UpdateMenuType")
+}

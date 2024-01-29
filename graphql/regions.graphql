@@ -1,0 +1,33 @@
+
+type Region {
+    id:ID!
+    name:String!
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    chapters: [Chapter] @hasMany
+    countries(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])):[Country] @hasMany (type: "paginator")
+}
+
+extend type Query {
+    region(
+      id: ID @eq
+    ): Region @find
+
+    all_regions: [Region!]! @all
+    
+     regions(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [Region!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createRegion(name: String!,status: Int!): Region! @create  @guard @inject(context:"user.id",name:"created_by")  
+    updateRegion(id: ID!,name: String,status: Int): Region! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteRegion(id: ID!): Region! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

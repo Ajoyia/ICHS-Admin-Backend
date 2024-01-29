@@ -1,0 +1,71 @@
+type MembershipOrganization{
+    id:ID!
+    name:String
+    brief_overview:String
+    headquarter_address:String
+    organization_website:String
+    branch_address:String
+    user:User @belongsTo
+    membership_id:Int
+    headQuaterCountry:Country @belongsTo
+    branchCountry:Country @belongsTo
+    headQuaterCity:City @belongsTo
+    branchCity:City @belongsTo
+    headQuaterState:State @belongsTo
+    branchState:State @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    headquarter_country_id:Int
+    headquarter_state_id: Int
+    headquarter_city_id: Int
+    branch_country_id: Int
+}
+
+extend type Query{
+    membershipOrganization(
+        id:ID!  @eq
+    ): MembershipOrganization @find @guard
+
+    membershipOrganizations:[MembershipOrganization] @all @guard
+}
+
+extend type Mutation{
+    createMembershipOrganization(
+        name:String
+        brief_overview:String
+        headquarter_address:String
+        organization_website:String
+        branch_address:String
+        user_id:Int
+        headquarter_country_id:Int
+        branch_country_id:Int
+        headquarter_city_id:Int
+        branch_city:Int
+        headquarter_state_id:Int
+        branch_state_id:Int
+        membership_id:Int
+    ):MembershipOrganization @create @guard @inject(context:"user.id",name:"created_by")
+
+    updateMembershipOrganization(
+        id:ID!
+        name:String
+        brief_overview:String
+        headquarter_address:String
+        organization_website:String
+        branch_address:String
+        user_id:Int
+        headquater_country_id:Int
+        branch_country_id:Int
+        headquater_city_id:Int
+
+        headquater_state_id:Int
+        membership_id:Int
+    ):MembershipOrganization @update @guard @inject(context:"user.id",name:"created_by")
+
+    deleteMembershipOrganization(
+        id:ID!
+    ):MembershipOrganization @delete @guard @inject(context: "user.id", name: "deleted_by")
+}

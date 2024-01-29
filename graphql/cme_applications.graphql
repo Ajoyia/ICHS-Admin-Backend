@@ -1,0 +1,211 @@
+
+type CMEApplication {
+    "Unique primary key."
+    id: ID!
+    user_id:Int
+    salutation_id: Int
+    first_name: String
+    last_name: String
+    remarks:[Remark] @morphMany
+    cme_product_id:Int
+    email: String
+    organization: String
+    cme_product:CMEProduct @belongsTo
+    mobile_no: String
+    statuses_id: Int
+    draft_stage: Int
+    user: User @belongsTo
+    address: String
+    total_credits: Int
+    pin_code: String
+    is_approved_by_congress_commissioner: String
+    congress_commissioner_id: Int
+    is_approved_by_london_office: String
+    london_office_id: Int
+    credit_hours:Int
+    all_activity_administrators:[CMEActivityAdministrator] @hasMany
+    city_id: Int
+    city: City @belongsTo
+    state: State @belongsTo
+    country: Country @belongsTo
+    cme_activity_administrators_specialties: [CMEActivityAdministratorSpecialty] @hasMany
+    cme_application_medical_professionals(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["medical_parent_id"])):[CMEApplicationMedicalProfessional] @hasMany (type: "paginator")
+
+    activity_administrators(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name","mobile_no","email"])):[CMEActivityAdministrator] @hasMany (type: "paginator")
+
+    target_audiences(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["total_learners","fee"])):[CMEApplicationTargetAudience] @hasMany (type: "paginator")
+
+    educational_gaps(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["objectives"])):[EducationalGap] @hasMany (type: "paginator")
+
+    speakers(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name","email"])):[CMESpeaker] @hasMany (type: "paginator")
+    locations(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["name"])):[CMELocation] @hasMany (type: "paginator")
+    sessions(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["name","heading"])):[CMESession] @hasMany (type: "paginator")
+    lectures(orderBy: [OrderByClause!] @orderBy,
+        where:_@whereConditions(columns:["name","heading"])):[CMELecture] @hasMany (type: "paginator")
+    allSpeakers:[CMESpeaker!] @hasMany
+    allSessions:[CMESession] @hasMany
+    allLocations:[CMELocation] @hasMany
+    state_id: Int
+    country_id: Int
+    cme_activity: String
+    activity_evaluation_method_other: String
+    activity_evaluation_method: String
+    CMEActivity:CMEActivity
+    title_event: String
+    frequency: String
+    event_date: DateTime
+    CMELearningFormates:[CMELearningFormate!] @belongsToMany
+    activity_type_others: String
+    social_event_others: String
+    learning_format_others: String
+    CMESocialEvents:[CMESocialEvent!] @belongsToMany
+    CMEApplicationPromotionActivities(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])):[CMEPromotionActivity!] @belongsToMany (type: "paginator")
+    educational_health_professionals: String
+    evidence_based: String
+    sales_biases: String
+    initials_activity_director: String
+    initials_activity_coordinatorvar: String
+    activity_overview: String
+    cme_cpd_provide: Int
+    cme_cpd_participants: Int
+    sessions_upload: String
+    activity_evolution: String
+    activity_evolution_other: String
+    cme_completion_forms:CMECompletionForm @hasMany
+    CMEActivityTime(orderBy: [OrderByClause!] @orderBy):[CMEActivityTime!] @hasMany (type: "paginator")
+
+    status: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_application(
+      "Search by primary key."
+      id: ID @eq
+    ): CMEApplication @find
+
+    export_learners(
+      cme_application_id: Int
+    ): String @field(resolver:"App\\GraphQL\\Queries\\CMECompletionForm\\ExportLearners")
+
+    export_sample_file: String @field(resolver:"App\\GraphQL\\Queries\\UploadSampleFile")
+
+    pending_approvals(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["updated_by","id"])
+    ): [CMEApplication!]! @paginate(builder: "App\\GraphQL\\Queries\\PendingCMEApplications")
+
+    all_cme_applications: [CMEApplication!]! @all
+
+    cme_applications(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["full_name"], handler: "App\\CMEApplication")
+    ): [CMEApplication!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMEApplication (
+        user_id: Int
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String
+        organization: String
+        mobile_no: String
+        address: String
+        pin_code: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        statuses_id: Int
+        draft_stage: Int
+        cme_activity: String
+        activity_evaluation_method_other: String
+        activity_evaluation_method: String
+        title_event: String
+        frequency: String
+        event_date: DateTime
+        educational_health_professionals: String
+        evidence_based: String
+        sales_biases: String
+        initials_activity_director: String
+        initials_activity_coordinatorvar: String
+        activity_overview: String
+        cme_cpd_provide: Int
+        activity_type_others: String
+        learning_format_others: String
+        social_event_others: String
+        cme_cpd_participants: Int
+        sessions_upload: Upload
+        activity_evolution: String
+        activity_evolution_other: String
+        status: Int ): CMEApplication  @guard @create @inject(context:"user.id",name:"created_by")
+
+    deleteCMEApplication(id: ID!): CMEApplication! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMEApplicationWithZeroFee(
+        id:ID!
+    ):String @guard @field(resolver:"App\\GraphQL\\Mutations\\CMEApplications\\updateCMEApplicationWithZeroFee")
+    updateCMEApplication(
+        id: ID!
+        user_id:Int
+        salutation_id: Int
+        first_name: String
+        congress_commissioner_id:Int
+        is_approved_by_congress_commissioner:String
+        is_approved_by_london_office: String
+        london_office_id: Int
+        credit_hours: Int
+        statuses_id:Int
+        draft_stage: Int
+        last_name: String
+        email: String
+        organization: String
+        mobile_no: String
+        address: String
+        activity_type_others: String
+        learning_format_others: String
+        social_event_others: String
+        pin_code: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        cme_activity: String
+        activity_evaluation_method_other: String
+        activity_evaluation_method: String
+        title_event: String
+        frequency: String
+        event_date: DateTime
+        educational_health_professionals: String
+        evidence_based: String
+        sales_biases: String
+        promo_code_id:Int
+        initials_activity_director: String
+        initials_activity_coordinatorvar: String
+        activity_overview: String
+        cme_cpd_provide: Int
+        total_credits: Int
+        cme_cpd_participants: Int
+        sessions_upload: Upload
+        activity_evolution: String
+        activity_evolution_other: String
+        status: Int
+        finish:Int): JSON @guard @field(resolver:"App\\GraphQL\\Mutations\\CMEApplications\\updateCMEApplication")
+
+        updateCMEApplicationSocialEvents(
+            id:ID!
+            social_events:[Int!]!
+        ):String @guard @field(resolver:"App\\GraphQL\\Mutations\\CMEApplications\\updateCMEApplicationSocialEvents")
+}

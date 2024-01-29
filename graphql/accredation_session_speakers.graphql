@@ -1,0 +1,49 @@
+
+type AccredationSessionSpeaker {
+    "Unique primary key."
+    id: ID!
+    role_id: Int
+    role:CMESpeakerRole @belongsTo
+    acc_speakers_id: Int
+    speaker:AccredationSpeaker @belongsTo
+    model_type: String
+    model_id: Int
+    acc_id: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_session_speaker(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationSessionSpeaker @find
+
+    all_accredation_session_speakers: [AccredationSessionSpeaker!]! @all
+
+    accredation_session_speakers(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [AccredationSessionSpeaker!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationSessionSpeaker(
+        role_id: Int
+        acc_speakers_id: Int
+        model_type: String
+        model_id: Int
+        acc_id: Int): String @guard @field(resolver:"App\\GraphQL\\Mutations\\AccredationSessionSpeakers\\CreateAccredationSessionSpeaker") @inject(context:"user.id",name:"created_by")
+
+    deleteAccredationSessionSpeaker(id: ID!): AccredationSessionSpeaker! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateAccredationSessionSpeaker(
+        id: ID!
+        role_id: Int
+        acc_speakers_id: Int
+       ): AccredationSessionSpeaker! @update @guard @inject(context:"user.id",name:"updated_by")
+}

@@ -1,0 +1,38 @@
+
+"Account of a person who utilizes this application."
+type FileManager {
+    "Unique primary key."
+    id: ID!
+    label: String!
+    name: String!
+    referance_id: String!
+    file_type: String!
+    status: Int!
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    file_manager(
+      "Search by primary key."
+      id: ID @eq
+    ): FileManager @find
+
+    all_file_managers: [FileManager!]! @all
+
+     file_managers(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["label","name"])
+    ): [FileManager!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createFileManager(
+                        label:  String!
+                        file: Upload!
+                        reference: String
+                    ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\FileManagers\\CreateFileManager")
+    deleteFileManager(id: ID!): String  @guard @field(resolver:"App\\GraphQL\\Mutations\\FileManagers\\DeleteFileManager")
+    updateFileManager(id: ID!,label: String,reference: String,image: Upload): String @guard @field(resolver:"App\\GraphQL\\Mutations\\FileManagers\\UpdateFileManager")
+
+
+
+}

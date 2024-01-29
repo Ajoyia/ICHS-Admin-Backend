@@ -1,0 +1,114 @@
+type LectureInteractiveTechnology {
+    id: ID
+    name: String
+}
+type LectureAudioVisual {
+    id: ID
+    name: String
+}
+type CMELecture {
+    "Unique primary key."
+    id: ID!
+    name: String
+    heading: String
+    featured: Int
+    description: String
+    special_accommodations: String
+    learning_objectives: String
+    break_time: String
+    audio_visual_other: String
+    interactive_technology_other: String
+    presentation_format_other: String
+    audio_visual_id: Int
+    interactive_technology_id: Int
+    presentation_format_id: Int
+    presentation_format:CMELecturePresentationFormat @belongsTo
+    interactive_technology:CMELectureInteractiveTechnology @belongsTo
+    audio_visual:CMELectureAudioVisual @belongsTo
+    lecture_interactive_technology:[LectureInteractiveTechnology] @belongsToMany
+    lecture_audio_visual:[LectureAudioVisual] @belongsToMany
+    starttime: DateTime
+    endtime: DateTime
+    break: Int
+    order: Int
+    session_location_id: Int
+    status: Int
+    cme_session_id: Int
+    cme_application_id: Int
+    lecture_location:CMELocation
+    session_speaker(orderBy: [OrderByClause!]! @orderBy(relations: [{ relation: "role", columns: ["name"] },{ relation: "speaker", columns: ["first_name"] }]),
+        where:_@whereConditions(columns:["name","first_name"],handler: "App\\seachLectureSpeakers")):[CMESessionSpeaker] @morphMany (type: "paginator")
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_lecture(
+      "Search by primary key."
+      id: ID @eq
+    ): CMELecture @find
+
+    all_cme_lectures: [CMELecture!]! @all
+
+    cme_lectures(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","heading"])
+    ): [CMELecture!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+
+    createCMELecture(
+        name: String
+        featured: Int
+        description: String
+        starttime: DateTime
+        endtime: DateTime
+        break: Int
+        order: Int
+        session_location_id: Int
+        cme_session_id: Int
+        status: Int
+        special_accommodations: String
+        learning_objectives: String
+        break_time: String
+        audio_visual_other: String
+        interactive_technology_other: String
+        presentation_format_other: String
+        audio_visual_id: [String]
+        interactive_technology_id: [String]
+        presentation_format_id: Int
+        file: Upload
+        cme_application_id: Int): CMELecture! @guard @field(resolver: "App\\GraphQL\\Mutations\\CMELecture\\Create")
+
+    deleteCMELecture(id: ID!): CMELecture! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateCMELecture(
+        id: ID!
+        name: String
+        featured: Int
+        description: String
+        starttime: DateTime
+        endtime: DateTime
+        break: Int
+        order: Int
+        session_location_id: Int
+        special_accommodations: String
+        learning_objectives: String
+        break_time: String
+        audio_visual_other: String
+        interactive_technology_other: String
+        presentation_format_other: String
+        audio_visual_id: Int
+        interactive_technology_id: [String]
+        audio_visual_id: [String]
+        cme_session_id: Int
+        status: Int
+        file: Upload
+        presentation_format_id: Int
+        cme_application_id: Int): CMELecture! @guard @field(resolver: "App\\GraphQL\\Mutations\\CMELecture\\Update")
+}

@@ -1,0 +1,13 @@
+type AllApplications {
+    "Unique primary key."
+    cme: [String!]!
+    hii: [String!]!
+    jichs: [String!]!
+    accredation:[String!]! 
+    grant:[String!]! 
+}
+
+extend type Query {
+    getAllApplications: [String!]!
+    @field(resolver:"App\\GraphQL\\Queries\\ApplicationResolver")
+}

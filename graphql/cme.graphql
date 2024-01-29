@@ -1,0 +1,17 @@
+#import cmeTargetAudience.graphql
+#import cme_social_events.graphql
+#import cme_learning_formate.graphql
+#import cme_activities.graphql
+#import cme_roles.graphql
+#import cme_speaker_roles.graphql
+#import cme_promotion_activity.graphql
+#import cme_education_list.graphql
+#import cme_activity_administrators.graphql
+#import cme_application_target_audience.graphql
+#import cme_speakers.graphql
+#import cme_locations.graphql
+#import cme_sessions.graphql
+#import cme_session_speakers.graphql
+#import cme_lectures.graphql
+#import cme_application_promotion_activity.graphql
+#import cme_activity_time.graphql

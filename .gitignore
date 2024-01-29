@@ -1,0 +1,62 @@
+/vendor/
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Laravel 4 specific
+bootstrap/compiled.php
+app/storage/
+
+# Laravel 5 & Lumen specific
+public/storage
+public/hot
+
+# Laravel 5 & Lumen specific with changed public path
+public_html/storage
+public_html/hot
+public_html/uploads/blog
+
+storage/*.key
+.env
+Homestead.yaml
+Homestead.json
+/.vagrant
+.phpunit.result.cache
+
+composer.lock
+# public/uploads/html_templates/images
+
+# public/uploads/file_manager/images
+
+# public/uploads/menu_items/icons
+
+# public/uploads/memberships/resumes
+
+
+public/uploads/cme_speakers
+public/uploads/blog
+public/uploads/CMELectures/
+
+# public/uploads/cme_speakers
+
+
+# public/uploads/invoices
+
+# public/uploads/receipts
+
+# public/uploads/membership/resume
+
+# public/uploads/journals
+# public/uploads/Lectures/images
+# public/uploads/signatures
+# public/uploads/xlsx_files
+# public/uploads/user_profile/images
+
+# public/uploads/cme_applications/
+# public/uploads/export_files
+# public/uploads/lectures
+
+# public/uploads/hii
+
+public/uploads/receipts
+public/uploads

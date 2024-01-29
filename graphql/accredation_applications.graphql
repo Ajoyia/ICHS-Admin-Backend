@@ -1,0 +1,209 @@
+
+type AccredationApplication {
+    "Unique primary key."
+    id: ID!
+    user_id: Int
+    salutation_id: Int
+    first_name: String
+    last_name: String
+    remarks: [Remark] @morphMany
+    accredation_product_id: Int
+    accredation_product:AccredationProduct @belongsTo
+    email: String
+    organization: String
+    mobile_no: String
+    status_id: Int
+    draft_stage: Int
+    user: User @belongsTo
+    address: String
+    total_credits: Int
+    is_approved_by_congress_commissioner: String
+    congress_commissioner_id: Int
+    is_approved_by_london_office: String
+    london_office_id: Int
+    credit_hours: Int
+    all_accredation_activity_administrators: [AccredationActivityAdministrator] @hasMany
+    city_id: Int
+    city: City @belongsTo
+    state: State @belongsTo
+    country: Country @belongsTo
+    state_id: Int
+    country_id: Int
+    cme_activity: String
+    activity_evaluation_method_other: String
+    activity_evaluation_method: String
+    CMEActivity: CMEActivity
+    title_event: String
+    frequency: String
+    event_date: DateTime
+    activity_type_others: String
+    social_event_others: String
+    learning_format_others: String
+    educational_health_professionals: String
+    evidence_based: String
+    sales_biases: String
+    initials_activity_director: String
+    initials_activity_coordinatorvar: String
+    activity_overview: String
+    cme_cpd_provide: Int
+    cme_cpd_participants: Int
+    sessions_upload: String
+    activity_evolution: String
+    activity_evolution_other: String
+    status: Int
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+
+    accredation_activity_administrators_specialties: [CMEActivityAdministratorSpecialty]
+        @hasMany
+
+    medical_professionals(orderBy: [OrderByClause!]! @orderBy):[AccredationMedicalProfessional] @hasMany (type: "paginator")
+
+    accredation_activity_administrators(orderBy: [OrderByClause!] @orderBy):[AccredationActivityAdministrator] @hasMany (type: "paginator")
+
+    accredation_target_audiences(orderBy: [OrderByClause!] @orderBy):[AccredationApplicationTargetAudience] @hasMany (type: "paginator")
+
+    educational_gaps(orderBy: [OrderByClause!] @orderBy):[AccredationEducationalGap] @hasMany (type: "paginator")
+
+    speakers(orderBy: [OrderByClause!] @orderBy):[AccredationSpeaker] @hasMany (type: "paginator")
+    locations(orderBy: [OrderByClause!] @orderBy):[AccredationLocation] @hasMany (type: "paginator")
+    sessions(orderBy: [OrderByClause!] @orderBy):[AccredationSession] @hasMany (type: "paginator")
+    lectures(orderBy: [OrderByClause!] @orderBy):[AccredationLecture] @hasMany (type: "paginator")
+    allAccredationSpeakers:[AccredationSpeaker] @hasMany
+    allAccredationSessions:[AccredationSession] @hasMany
+    allAccredationLocations:[AccredationLocation] @hasMany
+    AccredationLearningFormats:[AccredationLearningFormat] @belongsToMany
+    AccredationSocialEvents: [AccredationSocialEvent] @belongsToMany
+    AccredationActivities: [AccredationActivity] @belongsToMany
+    AccredationPromotionActivities(orderBy: [OrderByClause!] @orderBy):[AccredationPromotionActivity!] @belongsToMany (type: "paginator")
+    accredation_completion_forms:AccredationCompletionForm @hasMany
+    AccredationActivityTime(
+        orderBy: [OrderByClause!] @orderBy
+    ): [AccredationActivityTime!] @hasMany(type: "paginator")
+
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_application(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationApplication @find
+
+    # accredation_export_learners(
+    #   accredation_application_id: Int
+    # ): String @field(resolver:"App\\GraphQL\\Queries\\CMECompletionForm\\ExportLearners")
+
+    #  accredation_export_sample_file: String @field(resolver:"App\\GraphQL\\Queries\\UploadSampleFile")
+
+     accredation_pending_approvals(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["updated_by","id"])
+    ): [AccredationApplication!]! @paginate(builder: "App\\GraphQL\\Queries\\AccredationApplication\\PendingAccredations")
+
+    all_accredation_applications: [AccredationApplication!]! @all
+
+    accredation_applications(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["full_name"], handler: "App\\InternationalConference")
+    ): [AccredationApplication!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+
+      saveProduct(
+        id: ID!
+        country_id: Int): String @guard @field(resolver:"App\\GraphQL\\Mutations\\AccredationApplications\\saveProduct")
+
+
+    createAccredationApplication (
+        user_id: Int
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String
+        organization: String
+        mobile_no: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        status_id: Int
+        draft_stage: Int
+        cme_activity: String
+        activity_evaluation_method_other: String
+        activity_evaluation_method: String
+        title_event: String
+        frequency: String
+        event_date: DateTime
+        educational_health_professionals: String
+        evidence_based: String
+        sales_biases: String
+        initials_activity_director: String
+        initials_activity_coordinatorvar: String
+        activity_overview: String
+        cme_cpd_provide: Int
+        activity_type_others: String
+        learning_format_others: String
+        social_event_others: String
+        cme_cpd_participants: Int
+        sessions_upload: Upload
+        activity_evolution: String
+        activity_evolution_other: String
+        status: Int ): AccredationApplication  @guard @create @inject(context:"user.id",name:"created_by")
+
+    deleteAccredationApplication(id: ID!): AccredationApplication! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateAccredationApplication(
+        id: ID!
+        user_id:Int
+        salutation_id: Int
+        first_name: String
+        congress_commissioner_id:Int
+        is_approved_by_congress_commissioner:String
+        is_approved_by_london_office: String
+        london_office_id: Int
+        credit_hours: Int
+        status_id:Int
+        draft_stage: Int
+        last_name: String
+        email: String
+        organization: String
+        mobile_no: String
+        address: String
+        activity_type_others: String
+        learning_format_others: String
+        social_event_others: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        cme_activity: String
+        activity_evaluation_method_other: String
+        activity_evaluation_method: String
+        title_event: String
+        frequency: String
+        event_date: DateTime
+        educational_health_professionals: String
+        evidence_based: String
+        sales_biases: String
+        promo_code_id:Int
+        initials_activity_director: String
+        initials_activity_coordinatorvar: String
+        activity_overview: String
+        cme_cpd_provide: Int
+        total_credits: Int
+        cme_cpd_participants: Int
+        sessions_upload: Upload
+        activity_evolution: String
+        activity_evolution_other: String
+        status: Int
+        finish:Int): JSON @guard @field(resolver:"App\\GraphQL\\Mutations\\AccredationApplications\\updateAccredationApplication")
+
+        updateAccredationApplicationSocialEvents(
+            id:ID!
+            social_events:[Int!]!
+        ):String @guard @field(resolver:"App\\GraphQL\\Mutations\\AccredationApplications\\updateAccredationApplicationSocialEvents")
+}

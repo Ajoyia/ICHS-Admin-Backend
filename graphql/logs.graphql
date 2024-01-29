@@ -1,0 +1,24 @@
+type Log {
+    id:ID!
+    model_type:String
+    model_id:Int
+    user:User @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+extend type Query{
+    logs(
+        orderBy: [OrderByClause!]! @orderBy(relations: [{ relation: "user", columns: ["first_name"] }]),
+        where:_@whereConditions(columns:["model_type"])
+    ):[Log!] @guard @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createLog(
+        model_type:String
+        model_id:Int
+        user_id:Int): Log! @guard @create @inject(context:"user.id",name:"user_id") @inject(context:"user.id",name:"created_by")
+}

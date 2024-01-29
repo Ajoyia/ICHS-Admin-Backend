@@ -1,0 +1,69 @@
+
+"Account of a person who utilizes this application."
+type ProfileCard {
+    "Unique primary key."
+    id: ID!
+    category_id: ID
+    name: String
+    image: String
+    detail: String
+    country:Country @belongsTo
+    job_title:String
+    designation:String
+    credentails:String
+    speciality:Specialty @belongsTo
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    profileCard(
+      "Search by primary key."
+      id: ID @eq
+    ): ProfileCard @Find
+
+    all_profileCards: [ProfileCard!]! @all
+
+    profileCards(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:[ "name", "detail" ])
+    ): [ProfileCard!]! @paginate(defaultCount: 10)
+    getCoreOfProfessionalsTabs:JSON @field(resolver:"App\\GraphQL\\Queries\\ProfileCards\\GetCoreOfProfessionalsTabs")
+    getSpecialityProfileCards(specility:String):[ProfileCard!] @field(resolver:"App\\GraphQL\\Queries\\ProfileCards\\GetSpecialityProfileCards")
+}
+
+extend type Mutation {
+    createProfileCards(
+        category_id: Int
+        name: String
+        image: Upload
+        country_id:Int
+        jobTitle:String
+        designation:String
+        credentials:String
+        speciality_id:Int
+        detail: String
+    ): ProfileCard @guard @field(resolver:"App\\GraphQL\\Mutations\\ProfileCards\\CreateProfileCard")
+
+    updateProfileCards(
+        id: ID!
+        category_id: Int
+        name: String
+        image: Upload
+        detail: String
+        country_id:Int
+        jobTitle:String
+        designation:String
+        credentials:String
+        speciality_id:Int
+    ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\ProfileCards\\UpdateProfileCard")
+
+    deleteProfileCards(id: ID!): ProfileCard!
+    @delete @guard @inject(context:"user.id",name:"deleted_by")
+}

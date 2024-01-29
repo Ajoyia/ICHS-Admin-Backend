@@ -1,0 +1,41 @@
+type JournalType {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime 
+}
+
+extend type Query {
+    
+    journal_type(
+      "Search by primary key."
+      id: ID @eq
+    ): JournalType @find
+
+    
+
+    all_journal_types: [JournalType!]! @all
+
+    journal_types(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [JournalType!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createJournalType(
+        name: String!,
+        status: Int,
+        ): JournalType! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateJournalType(
+        id: ID!,
+        name: String,
+        status: Int
+        ): JournalType! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteJournalType(id: ID!): JournalType! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

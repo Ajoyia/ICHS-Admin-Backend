@@ -1,0 +1,46 @@
+
+"Account of a person who utilizes this application."
+type AccredationMedicalProfessional {
+    "Unique primary key."
+    id: ID!
+    medical_parent_id: Int
+    medical_child_id: Int
+    acc_id: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    child_medical: MedicalHealthProfessional @belongsTo
+    parent_medical: MedicalHealthProfessional @belongsTo
+    accredation: AccredationApplication @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+   accredation_health_professional(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationMedicalProfessional @find
+
+    all_accredation_health_professionals: [CMEActivity!]! @all
+
+    accredation_health_professionals(
+        orderBy: [OrderByClause!]! @orderBy
+    ): [AccredationMedicalProfessional!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationMedicalProfessional(
+        medical_parent_id: Int
+        medical_child_id: Int
+        acc_id: Int): AccredationMedicalProfessional! @create @guard  @inject(context:"user.id",name:"created_by")
+
+    deleteAccredationMedicalProfessional(id: ID!): AccredationMedicalProfessional! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateAccredationMedicalProfessional(
+        id: ID!
+        medical_parent_id: Int
+        medical_child_id: Int
+        acc_id: Int): AccredationMedicalProfessional! @update @guard @inject(context:"user.id",name:"updated_by")
+}

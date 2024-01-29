@@ -1,0 +1,39 @@
+type Donation {
+    id:ID!
+    frquency:String
+    amount:Float
+    user:User @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    donation(
+      "Search by primary key."
+      id: ID @eq
+    ): Donation @find
+
+    all_donations(status:Boolean @eq): [Donation!]! @all @orderBy(column: "id", direction: DESC)
+
+    donations(
+        status:Boolean @eq
+        orderBy: [OrderByClause!] @orderBy(relations: [{ relation: "user", columns: ["first_name"] }]),
+        where:_@whereConditions(columns:["name","amount"],,handler: "App\\searchDonations")
+    ): [Donation!] @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createDonation(
+        frquency:String
+        amount:Float): String!
+            @guard
+            @field(resolver:"App\\GraphQL\\Mutations\\Donations\\CreateDonation")
+    updateDonation(
+        id: ID!
+        frquency:String
+        amount:Float): Donation! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteDonation(id: ID!): Donation! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

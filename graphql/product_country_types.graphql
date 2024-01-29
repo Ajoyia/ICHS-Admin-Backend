@@ -1,0 +1,88 @@
+type ProductCountryType {
+    "Unique primary key."
+    id: ID!
+    product_id:Int
+    membership_type_id:Int
+    country_type_id:Int
+    description:String
+    price:Float
+    tax_group_id:Int
+    is_published:Int
+    type:String
+    validity:Int
+    expire_on:Date
+    degree_type:String
+    percentage_required:Float
+    status:Int
+    benefits: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    product:Product @belongsTo
+    tax_group:TaxGroup @belongsTo
+    country_type:CountriesType @belongsTo
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    product_country_type(
+      "Search by primary key."
+      id: ID @eq
+    ): ProductCountryType @find
+
+    "List multiple users."
+
+    all_product_country_types: [ProductCountryType!]! @all
+
+    product_country_types(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["price","description"])
+    ): [ProductCountryType!]! @paginate(defaultCount: 10)
+
+    product_country_types_of_a_product(
+        product_id:ID! @eq
+        orderBy: _
+        @orderBy(relations: [{ relation: "country_type", columns: ["name"] }])
+        where:_@whereConditions(columns:["price","description","name"], handler: "App\\searchCountryTypeOfAProduct")
+    ):[ProductCountryType!]! @paginate(defaultCount: 10)
+
+    product_country_types_front_end:JSON @field(resolver:"App\\GraphQL\\Queries\\ProductCountryTypes\\ProductCountryTypesFrontend")
+}
+extend type Mutation {
+    createProductCountryType(
+        product_id:  Int,
+        country_type_id: Int,
+        membership_type_id:Int,
+        description: String,
+        price: Float,
+        tax_group_id: Int,
+        is_published: Int,
+        type:String,
+        validity:Int,
+        expire_on:Date,
+        benefits: String,
+        degree_type:String,
+        percentage_required:Float,
+        status: Int
+    ): ProductCountryType! @create @guard @inject(context:"user.id",name:"created_by")
+    deleteProductCountryType(id: ID!): ProductCountryType! @delete  @guard  @inject(context:"user.id",name:"deleted_by")
+    updateProductCountryType(
+        id: ID!,
+        product_id: Int,
+        country_type_id: Int,
+        membership_type_id:Int,
+        description: String,
+        price: Float,
+        tax_group_id: Int,
+        is_published: Int,
+        type:String,
+        validity:Int,
+        expire_on:Date,
+        benefits: String,
+        degree_type:String,
+        percentage_required:Float,
+        status: Int): ProductCountryType! @update @guard @inject(context:"user.id",name:"updated_by")
+}

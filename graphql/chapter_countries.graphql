@@ -1,0 +1,27 @@
+
+type ChapterCountry {
+    id:ID!
+    country_id:Int
+    country_type_id:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    chapter:Chapter @belongsTo   
+    country:Country @belongsTo
+    
+}
+
+extend type Query {
+    chapter_country(
+      id: ID @eq
+    ): ChapterCountry @find
+
+    all_chapter_countries: [ChapterCountry!]! @all
+}
+extend type Mutation {
+    createChapterCountry(country_id: [Int],chapter_id: Int): String @guard @inject(context:"user.id",name:"created_by") @field(resolver:"App\\GraphQL\\Mutations\\ChapterCountries\\UpdateCountries")
+    deleteChapterCountry(country_id: Int,chapter_id:Int): String @guard @inject(context:"user.id",name:"deleted_by")@field(resolver:"App\\GraphQL\\Mutations\\ChapterCountries\\DeleteCountries")
+}

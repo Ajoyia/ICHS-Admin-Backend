@@ -1,0 +1,38 @@
+
+type NotificationSender {
+    id:ID!
+    title:String
+    host:String
+    username:String
+    password:String
+    port:String
+    from_email:String
+    type:String
+    account_key:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    notification_sender(
+      id: ID @eq
+    ): NotificationSender @find
+
+    all_notification_senders: [NotificationSender!]! @all
+    
+    notification_senders(
+        orderBy: [OrderByClause!]! @orderBy,
+        
+        where:_@whereConditions(columns:["title","from_email"])
+    ): [NotificationSender!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createNotificationSender(title: String,host: String,username: String,password: String,port: String,from_email: String,type: String,account_key: String,status: Int): NotificationSender! @create  @guard @inject(context:"user.id",name:"created_by")  
+    updateNotificationSender(id: ID!,title: String,host: String,username: String,password: String,port: String,from_email: String,type: String,account_key: String,status: Int): NotificationSender! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteNotificationSender(id: ID!): NotificationSender! @delete @guard @inject(context:"user.id",name:"deleted_by")
+}

@@ -1,0 +1,158 @@
+type Membership {
+    "Unique primary key."
+    id: ID!
+    membership_id:String
+    user_id: Int
+    user:User @belongsTo
+    product_country_type_id: Int
+    membership_type_id: Int
+    start_date: DateTime
+    end_date: DateTime
+    medical_facility: String
+    medical_interests: String
+    resume: String
+    address: String
+    university: String
+    status: Int
+    membership_publications(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])):[MembershipPublication] @hasMany (type: "paginator")
+    all_membership_publications: [MembershipPublication!]!  @hasMany
+    membership_innovation_initiatives(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])):[MembershipInnovationInitiative] @hasMany (type: "paginator")
+    all_membership_innovation_initiatives: [MembershipPublication!]!  @hasMany
+    membership_research_activities(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])):[MembershipResearchActivity] @hasMany (type: "paginator")
+    all_membership_research_activities: [MembershipResearchActivity!]!  @hasMany
+    membership_organizations:MembershipOrganization @hasOne
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    tab: String
+    resumaDownload:String
+}
+
+extend type Query {
+    membership(
+      "Search by primary key."
+      id: ID @eq
+    ): Membership @find
+
+    all_memberships: [Membership!]! @all
+
+    memberships(
+        membership_type_id:ID @eq
+        orderBy: [OrderByClause!]! @orderBy(relations: [{ relation: "user", columns: ["first_name"] }])
+        where:_@whereConditions(columns:["membership_id","user","start_date","end_date"], handler: "App\\searchMembership")
+    ): [Membership!]! @paginate(defaultCount: 10)
+
+    getInvitation(invitation_token:String @eq): User @find
+
+    getMembers(
+        parent_id:Int @eq,
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["id","email","first_name","last_name"])
+    ): [User!]! @paginate(defaultCount: 10)
+
+}
+extend type Mutation {
+    createMembership(
+        user_id:  Int
+        membership_id:String
+        product_country_type_id: Int
+        membership_type_id:  Int
+        medical_facility: String
+        medical_interests: String
+        resume: Upload
+        status: Int
+        ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\CreateMembership")  @inject(context:"user.id",name:"created_by")
+
+    deleteMembership(id: ID!): Membership! @delete  @guard  @inject(context:"user.id",name:"deleted_by")
+
+    updateMembership(
+        id: ID!
+        user_id:  Int
+        membership_id:String
+        product_country_type_id: Int
+        membership_type_id:  Int
+        medical_facility: String
+        medical_interests: String
+        type:String
+        resume: Upload
+    status: Int): String @guard @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\UpdateMembership")  @inject(context:"user.id",name:"updated_by")
+
+    createNewMembership(
+        unique_membership_id:Int
+        user_id:  Int
+        membership_id:Int
+        medical_facility: String
+        medical_interests:String
+        membership_publications:String
+        membership_innovation_initiatives:String
+        membership_research_activities:String
+        organization_name:String,
+        organization_brief_overview:String,
+        organization_headquarter_address:String,
+        organization_website:String,
+        branch_address:String,
+        headquarter_country_id:  Int
+        headquarter_state_id:  Int
+        headquarter_city_id:  Int
+        branch_country_id:  Int
+        product_country_type_id: Int
+        resume: Upload
+        tab:String
+        degree_file:Upload
+        degree_type:String
+
+        # subspecialty:String,
+        # university:String
+        ): Membership @guard @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\CreateNewMembership")
+    saveResume(
+        user_id:  Int,
+        resume: Upload
+    ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\SaveResumeMembership")
+    getPaymentStatus(
+        ref: String
+    ): String @field(resolver:"App\\GraphQL\\Mutations\\GetPaymentsStatus")
+
+
+    sendInvitation(email: String @rules(apply:["email","App\\Rules\\UniqueEmail"]) ):String
+    @guard
+    @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\SendInvitation")
+
+    saveInvitation(
+        salutation_id: Int
+        first_name: String
+        last_name: String
+        email: String!
+        password: String
+        organization: String
+        mobile_no: String
+        membership_unique_id: String
+        address: String
+        city_id: Int
+        state_id: Int
+        country_id: Int
+        nationality_id: Int
+        job_title: String
+        user_experiences: String
+        resume: Upload
+        medical_facility:String
+        medical_interests:String
+        medical_interests:String
+        membership_publications: String
+        membership_research_activities: String
+        membership_innovation_initiatives: String
+        speciality_id: [String!]!
+
+    ): String @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\SaveInvitation")
+
+
+    deleteMember(id:ID!): String @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\DeleteMember")
+
+    updateFellowship(id:ID! approve:Int! rejectionReason:String ): Membership @guard @field(resolver:"App\\GraphQL\\Mutations\\Memberships\\UpdateFellowship")
+
+}

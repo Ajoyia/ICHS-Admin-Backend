@@ -1,0 +1,71 @@
+
+type CMESession {
+    "Unique primary key."
+    id: ID!
+    name: String
+    heading: String
+    featured: Int
+    description: String
+    starttime: DateTime
+    endtime: DateTime
+    break: Int
+    order: Int
+    session_location_id: Int
+    status: Int
+    cme_application_id: Int
+    session_speaker(orderBy: [OrderByClause!]! @orderBy(relations: [{ relation: "role", columns: ["name"] },{ relation: "speaker", columns: ["first_name"] }]),
+        where:_@whereConditions(columns:["name","first_name"],handler: "App\\searchSeesionSpeakers")):[CMESessionSpeaker] @morphMany (type: "paginator")
+
+    # session_speaker: [CMESessionSpeaker] @morphMany
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_session(
+      "Search by primary key."
+      id: ID @eq
+    ): CMESession @find
+
+    all_cme_sessions: [CMESession!]! @all
+
+    cme_sessions(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMESession!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMESession(
+        name: String
+        heading: String
+        featured: Int
+        description: String
+        starttime: DateTime
+        endtime: DateTime
+        break: Int
+        order: Int
+        session_location_id: Int
+        status: Int
+        cme_application_id: Int): CMESession! @create @guard  @inject(context:"user.id",name:"created_by")
+
+    deleteCMESession(id: ID!): CMESession! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateCMESession(
+        id: ID!
+        name: String
+        heading: String
+        featured: Int
+        description: String
+        starttime: DateTime
+        endtime: DateTime
+        break: Int
+        order: Int
+        session_location_id: Int
+        status: Int
+        cme_application_id: Int): CMESession! @update @guard @inject(context:"user.id",name:"updated_by")
+}

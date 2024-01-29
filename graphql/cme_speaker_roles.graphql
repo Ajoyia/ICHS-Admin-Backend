@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type CMESpeakerRole {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_speaker_role(
+      "Search by primary key."
+      id: ID @eq
+    ): CMESpeakerRole @find
+
+    all_cme_speaker_roles: [CMESpeakerRole!]! @all
+
+     cme_speaker_roles(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMESpeakerRole!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMESpeakerRole(name:  String!,status: Int): CMESpeakerRole! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMESpeakerRole(id: ID!): CMESpeakerRole! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMESpeakerRole(id: ID!,name:String,status: Int): CMESpeakerRole! @update @guard @inject(context:"user.id",name:"updated_by")
+}

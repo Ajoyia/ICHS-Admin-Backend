@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type CMESocialEvent {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_social_event(
+      "Search by primary key."
+      id: ID @eq
+    ): CMESocialEvent @find
+
+    all_cme_social_events: [CMESocialEvent!]! @all
+
+     cme_social_events(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMESocialEvent!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMESocialEvent(name:  String!,status: Int): CMESocialEvent! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMESocialEvent(id: ID!): CMESocialEvent! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMESocialEvent(id: ID!,name:String,status: Int): CMESocialEvent! @update @guard @inject(context:"user.id",name:"updated_by")
+}

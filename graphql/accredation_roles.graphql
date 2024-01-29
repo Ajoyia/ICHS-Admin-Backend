@@ -1,0 +1,46 @@
+"Account of a person who utilizes this application."
+type AllAccredationRoleLink {
+    link_roles: JSON
+}
+type AccredationRole {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    link_role: Int
+    accredation_target_audience: [AccredationTargetAudience] @hasMany
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_role("Search by primary key." id: ID @eq): AccredationRole @find
+   
+    accredation_roles_with_link_roles: [AccredationRole!]!
+        @field(resolver: "App\\GraphQL\\Queries\\Variables\\GetNonNullAccredationRoles")
+    all_accredation_roles: [AccredationRole!]! @all
+
+    accredation_roles(
+        orderBy: [OrderByClause!]! @orderBy
+        where: _ @whereConditions(columns: ["name"])
+    ): [AccredationRole!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationRole(name: String!, status: Int, link_role: Int): AccredationRole!
+        @create
+        @guard
+        @inject(context: "user.id", name: "created_by")
+    deleteAccredationRole(id: ID!): AccredationRole!
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+    updateAccredationRole(id: ID!, name: String, status: Int, link_role: Int): AccredationRole!
+        @update
+        @guard
+        @inject(context: "user.id", name: "updated_by")
+}

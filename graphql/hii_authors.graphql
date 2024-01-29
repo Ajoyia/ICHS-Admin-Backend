@@ -1,0 +1,89 @@
+
+"Account of a person who utilizes this application."
+type HIIAuthor {
+    id:ID!
+    hii_id: Int
+    salutation_id:Int
+    salutation:Salutation@belongsTo
+    first_name:String
+    last_name:String
+    credentials:String
+    email:String
+    phone_no:String
+    job_title:String
+    organization:String
+    address:String
+    nationality_id:Int
+    country_id:Int
+    country:Country @belongsTo
+    nationality:Nationality @belongsTo
+    salutation:Salutation @belongsTo
+    state_id:Int
+    city_id: Int
+    hii:HealthInnovationInitiative @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    hii_author(
+      "Search by primary key."
+      id: ID @eq
+    ): HIIAuthor @Find
+
+    hii_authors_of_hii(
+        hii_id:Int! @eq
+    ):[HIIAuthor!] @all
+
+   
+    all_hii_authors: [HIIAuthor!]! @all
+
+    hii_authors(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["first_name"])
+    ): [HIIAuthor!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createHIIAuthor(
+        authorable_id: Int
+        authorable_type: String
+        salutation_id:Int
+        first_name:String
+        last_name:String
+        credentials:String
+        email:String
+        phone_no:String
+        job_title:String
+        organization:String
+        address:String
+        nationality_id:Int
+        country_id:Int
+        state_id:Int
+        city_id: Int
+        ): HIIAuthor! @guard @create @inject(context:"user.id",name:"created_by") 
+        
+    updateHIIAuthor(id: ID!
+        authorable_id: Int
+        authorable_type: String
+        salutation_id:Int
+        first_name:String
+        last_name:String
+        credentials:String
+        email:String
+        phone_no:String
+        job_title:String
+        organization:String
+        address:String
+        nationality_id:Int
+        country_id:Int
+        state_id:Int
+        city_id: Int): HIIAuthor! @guard @update @inject(context:"user.id",name:"created_by")
+
+    deleteHIIAuthor(id: ID!): HIIAuthor! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

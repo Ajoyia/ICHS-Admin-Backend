@@ -1,0 +1,36 @@
+
+"Account of a person who utilizes this application."
+type AccredationActivity {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_activity(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationActivity @find
+
+    all_accredation_activities: [AccredationActivity!]! @all
+
+     accredation_activities(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [AccredationActivity!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationActivity(name:  String!,status: Int): AccredationActivity! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteAccredationActivity(id: ID!): AccredationActivity! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateAccredationActivity(id: ID!,name:String,status: Int): AccredationActivity! @update @guard @inject(context:"user.id",name:"updated_by")
+    updateAccredationApplicationActivities(id:ID!,activity_types:[Int!]): String @guard @field(resolver:"App\\GraphQL\\Mutations\\AccredationApplications\\updateAccredationApplicationActivities")
+
+}

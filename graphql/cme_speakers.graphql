@@ -1,0 +1,170 @@
+
+"Account of a person who utilizes this application."
+type CMESpeaker {
+    id:ID!
+    first_name:String
+    middle_name:String
+    last_name:String
+    salutation_id:Int
+    order:Int
+    email:String
+    title:String
+    degree:String
+    phone_no:String
+    is_financial_relation_with_entity:Int
+    company_name:String
+    relation_type:String
+    content_area:String
+    activity_planned:String
+    is_financial_relation_with_content:Int
+    designation: String
+    entity: String
+    bio: String
+    image: Upload
+    feature: Int
+    application_signature:ApplicationSignature @morphOne
+    is_policy_agreement_email_sent:Int
+    policy_agreement_email_sent_date:DateTime
+    is_policy_agreement_signed:Int
+    policy_agreement_signed_date:DateTime
+    is_disclosure_email_sent:Int
+    disclosure_email_sent_date:DateTime
+    is_disclosure_signed:Int
+    disclosure_signed_date:DateTime
+    is_publish: Int
+    status: Int
+    country_id: Int
+    cme_application_id: Int
+    cme_application:CMEApplication @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_speaker(
+      "Search by primary key."
+      id: ID @eq
+    ): CMESpeaker @Find
+
+    cme_speakers_of_an_application(
+        cme_application_id:Int! @eq
+    ):[CMESpeaker!] @all
+
+    get_application_signature(
+        type: String
+        model_id: Int
+    ): ApplicationSignature
+        @field(
+            resolver: "App\\GraphQL\\Queries\\ApplicationSignature\\GetApplicationSignature"
+        )
+
+    all_cme_speakers: [CMESpeaker!]! @all
+
+    cme_speakers(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["first_name"])
+    ): [CMESpeaker!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMESpeaker(
+        first_name:String
+        middle_name:String
+        last_name:String
+        salutation_id:Int
+        order:Int
+        email:String
+        title:String
+        degree:String
+        phone_no:String
+        is_financial_relation_with_entity:Int
+        company_name:String
+        relation_type:String
+        content_area:String
+        activity_planned:String
+        is_financial_relation_with_content:Int
+        country_id: Int
+        designation: String
+        cme_application_id: Int
+        entity: String
+        bio: String
+        image: Upload
+        is_policy_agreement_email_sent:Int
+        policy_agreement_email_sent_date:DateTime
+        is_policy_agreement_signed:Int
+        policy_agreement_signed_date:DateTime
+        is_disclosure_email_sent:Int
+        disclosure_email_sent_date:DateTime
+        is_disclosure_signed:Int
+        disclosure_signed_date:DateTime
+        feature: Int
+        is_publish: Int
+        status: Int
+        ): String @field(resolver:"App\\GraphQL\\Mutations\\CMESpeakers\\CreateCMESpeaker") @guard @inject(context:"user.id",name:"created_by")
+
+        updateCMESpeakerSigned(
+        id: ID!
+        is_policy_agreement_signed:Int
+        ): String @inject(context:"user.id",name:"created_by")
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CMESpeakers\\updateCMESpeakerSigned"
+        )
+
+        updateCMESpeakerDisclosureSigned(
+            id: ID!
+            degree:String
+            phone_no:String
+            is_financial_relation_with_entity:Int
+            company_name:String
+            relation_type:String
+            content_area:String
+            activity_planned:String
+            is_financial_relation_with_content:Int
+            is_disclosure_signed:Int
+            ): String
+            @field(
+                resolver: "App\\GraphQL\\Mutations\\CMESpeakers\\updateCMESpeakerDisclosureSigned"
+            )
+
+
+    updateCMESpeaker(id: ID!
+        first_name:String
+        middle_name:String
+        last_name:String
+        salutation_id:Int
+        degree:String
+        phone_no:String
+        is_financial_relation_with_entity:Int
+        company_name:String
+        relation_type:String
+        content_area:String
+        activity_planned:String
+        is_financial_relation_with_content:Int
+        order:Int
+        email:String
+        title:String
+        country_id: Int
+        cme_application_id: Int
+        is_policy_agreement_email_sent:Int
+        policy_agreement_email_sent_date:DateTime
+        is_policy_agreement_signed:Int
+        policy_agreement_signed_date:DateTime
+        is_disclosure_email_sent:Int
+        disclosure_email_sent_date:DateTime
+        is_disclosure_signed:Int
+        disclosure_signed_date:DateTime
+        entity: String
+        bio: String
+        designation: String
+        image: Upload
+        feature: Int
+        is_publish: Int
+        status: Int): String @field(resolver:"App\\GraphQL\\Mutations\\CMESpeakers\\UpdateCMESpeaker") @guard @inject(context:"user.id",name:"created_by")
+
+    deleteCMESpeaker(id: ID!): CMESpeaker! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

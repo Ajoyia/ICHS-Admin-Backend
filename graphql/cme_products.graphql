@@ -1,0 +1,72 @@
+
+"Account of a person who utilizes this application."
+type CMEProduct {
+    id:ID!
+    product_id:Int
+    product:Product @belongsTo
+    description:String
+    price:Int
+    hour_from:Float
+    hour_to:Float
+    per_certificate_price:Float
+    tax_group_id:Int
+    is_published:Int
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    product_country_type: [ProductCountryTypeListing] @belongsTo
+    country_types:[CountriesType] @belongsToMany
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_product(
+      "Search by primary key."
+      id: ID @eq
+    ): CMEProduct @find
+    all_cme_products: [CMEProduct!]! @all
+
+    cme_products(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["per_certificate_price","price"])
+    ): [CMEProduct!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMEProduct(
+        product_id:Int
+        description:String
+        price:Int
+        hour_from:Float
+        hour_to:Float
+        per_certificate_price:Float
+        tax_group_id:Int
+        is_published:Int
+        status:Int
+        countries: String
+        ): CMEProduct! @guard @field(
+            resolver: "App\\GraphQL\\Mutations\\CmeProducts\\CreateProduct"
+        )
+
+    updateCMEProduct(
+        id: ID!
+        product_id:Int
+        description:String
+        price:Int
+        hour_from:Float
+        hour_to:Float
+        per_certificate_price:Float
+        tax_group_id:Int
+        is_published:Int
+        countries: String
+        status:Int
+        countries: String
+        ): CMEProduct! @guard @field(
+            resolver: "App\\GraphQL\\Mutations\\CmeProducts\\UpdateProduct"
+        )
+
+    deleteCMEProduct(id: ID!): CMEProduct! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

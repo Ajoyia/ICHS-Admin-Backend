@@ -1,0 +1,48 @@
+
+type IvlnSpeaker {
+    id:ID!
+    name:String
+    designation:String
+    about:String
+    status:Int
+    course_id:Int
+    image:String
+    courses:IvlnCourse @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    IvlnSpeaker(
+      id: ID @eq
+    ): IvlnSpeaker @find
+
+    all_IvlnSpeaker: [IvlnSpeaker!]! @all
+
+    IvlnSpeakerPagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","designation"])
+    ): [IvlnSpeaker!]! @paginate(defaultCount: 10)
+
+}
+
+extend type Mutation {
+    createSpeaker(name: String!,
+        designation: String,
+        status: Int!,
+        about:String
+        course_id:Int,
+        image:Upload): IvlnSpeaker! @guard @field(resolver:"App\\GraphQL\\Mutations\\Speaker\\Create")
+    updateSpeaker(id: ID!,
+        name: String,
+        designation: String,
+        about:String,
+        status: Int,
+        course_id:Int,
+        image:Upload): IvlnSpeaker!@guard @field(resolver:"App\\GraphQL\\Mutations\\Speaker\\Update")
+    deleteSpeaker(id: ID!): IvlnSpeaker! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

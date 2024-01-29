@@ -1,0 +1,118 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
+scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar JSON @scalar(class: "MLL\\GraphQLScalars\\JSON")
+scalar Upload
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
+
+enum SortOrder {
+    ASC
+    DESC
+}
+
+input OrderByClause {
+    field: String
+    order: SortOrder
+}
+
+#import education_gap_types.graphql
+#import education_gap.graphql
+#import profile_cards.graphql
+#import pages_categories.graphql
+#import auth.graphql
+#import html_template.graphql
+#import file_manager.graphql
+#import static_pages.graphql
+#import policies.graphql
+#import menu_types.graphql
+#import menu_items.graphql
+#import specialties.graphql
+#import job_titles.graphql
+#import user.graphql
+#import taxes.graphql
+#import tax_groups.graphql
+#import regions.graphql
+#import lectures.graphql
+#import ivln_section.graphql
+#import ivln_courses.graphql
+#import ivln_lectures_type.graphql
+#import ivln_templates.graphql
+#import ivln_speakers.graphql
+#import ivln_lecture_speaker.graphql
+#import speaker_roles.graphql
+#import membership_types.graphql
+#import products.graphql
+#import product_country_types.graphql
+#import medical_health_professionals.graphql
+#import memberships.graphql
+#import roleHourse.graphql
+#import membership_innovation_initiatives.graphql
+#import membership_publications.graphql
+#import membership_research_activities.graphql
+#import notifications_sender.graphql
+#import automated_notifications.graphql
+#import cme.graphql
+#import cme_applications.graphql
+#import userExperiences.graphql
+#import membership_organizations.graphql
+#import test.graphql
+#import cme_activity_administrators_specialties.graphql
+#import cme_products.graphql
+#import product_country_type_listings.graphql
+#import url.graphql
+#import application_signature.graphql
+#import remarks.graphql
+#import cme_completion_forms.graphql
+#import ratings.graphql
+#import ivln_attendance_user.graphql
+#import transaction.graphql
+#import promo_codes.graphql
+#import invoice.graphql
+#import ivln_favorite.graphql
+#import tags_keywords.graphql
+#import cme_application_medical_professionals.graphql
+#import ivln_tags.graphql
+#import currencies.graphql
+#import logs.graphql
+#import language.graphql
+#import cme_lectures_audio_visuals.graphql
+#import cme_lectures_interactive_technologies.graphql
+#import cme_lectures_presentation_formats.graphql
+#import time_zone.graphql
+
+#import journal_type.graphql
+#import journal_application_contents.graphql
+#import journal_application.graphql
+
+#import health_innovation_initiative_types.graphql
+#import packages.graphql
+#import health_innovation_initiatives.graphql
+#import hii_authors.graphql
+#import accredation.graphql
+#import blogs.graphql
+#import donations.graphql
+
+#import events.graphql
+#import Slider.graphql
+
+#import chapters.graphql
+#import grantPurposes.graphql
+#import grants.graphql
+
+#import volunteer_type.graphql
+#import volunteers.graphql
+#import award.graphql
+
+#import contact_queries.graphql
+#import admin_control_pannel.graphql
+
+#import logger_activities.graphql
+
+#import alliances.graphql
+#import chapter_countries.graphql
+
+#import ivln_supporter.graphql
+#import chapter_endorsements.graphql
+
+#import chapter_users.graphql

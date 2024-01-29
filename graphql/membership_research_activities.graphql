@@ -1,0 +1,35 @@
+
+"Account of a person who utilizes this application."
+type MembershipResearchActivity {
+    "Unique primary key."
+    id: ID!
+    name: String
+    membership_id: Int
+    membership: Membership @belongsTo
+    status: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    membership_research_activity(
+      "Search by primary key."
+      id: ID @eq
+    ): MembershipResearchActivity @find
+
+    all_membership_research_activities: [MembershipResearchActivity!]! @all
+     membership_research_activities(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [MembershipResearchActivity!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createMembershipResearchActivity(name: String,membership_id: Int,status:Int): MembershipResearchActivity! @create @guard @inject(context:"user.id",name:"created_by")  
+    deleteMembershipResearchActivity(id: ID!): MembershipResearchActivity! @delete @guard @inject(context:"user.id",name:"deleted_by")  
+    updateMembershipResearchActivity(id: ID!,name: String,membership_id: Int,status:Int): MembershipResearchActivity! @update @guard @inject(context:"user.id",name:"updated_by")  
+}

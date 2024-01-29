@@ -1,0 +1,19 @@
+type Invoice{
+    id:ID
+    user:User
+    model_type:String
+    model_id:Int
+    is_pay:Int
+    status:Int
+    data:JSON
+    payment_status:String
+    link:String
+    trancastions:[TransactionDetail] @hasMany
+    deletedBy:User
+    updatedBy:User
+    created_at:DateTime
+    updated_at:DateTime
+}
+extend type Query {
+    invoices:[Invoice!] @all
+}

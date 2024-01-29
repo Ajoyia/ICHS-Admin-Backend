@@ -1,0 +1,39 @@
+type Alliance {
+    id:ID!
+    title:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    specialities:[Specialty] @belongsToMany
+    users:JSON @method(name:"users")
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    Alliance(
+      "Search by primary key."
+      id: ID @eq
+    ): Alliance @Find
+
+    all_alliances: [Alliance!]! @all
+
+    alliance(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["title"])
+    ): [Alliance!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAlliance(title: String specialities:[Int] status:Int): Alliance! @field(resolver: "App\\GraphQL\\Mutations\\Alliances\\Create")  @guard
+    updateAlliance(
+        id: ID!,
+        title: String
+        status:Int
+        specialities:[Int]
+    ): Alliance! @field(resolver: "App\\GraphQL\\Mutations\\Alliances\\Update") @guard
+    deleteAlliance(id: ID!): Alliance! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}
+

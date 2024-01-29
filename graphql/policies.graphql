@@ -1,0 +1,62 @@
+type Policy{
+    id:ID!
+    name:String
+    slug:String
+    is_guest:Int
+    is_volunteer:Int
+    hours:Int
+    description:String
+    time_breakup:JSON
+    status:Int
+    is_deleteable:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    policyPermissions:[PolicyPermission]! @hasMany
+}
+
+extend type Query {
+    "Find a single policy by an identifying attribute."
+    policy(slug: String! @eq): Policy @find
+
+    "List all policies."
+    all_policies: [Policy!]! @all
+
+    volunteerable_policies(is_volunteer:Int @eq): [Policy!]! @all
+
+     policies(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [Policy!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createPolicy(
+        name:String
+        is_guest:Int
+        is_volunteer:Int
+        description:String
+        hours:Int
+        is_deleteable:Int
+        time_breakup:JSON
+    ): Policy! @guard @inject(context:"user.id",name:"created_by") @field(resolver:"App\\GraphQL\\Mutations\\Policies\\CreatePolicy")
+
+    updatePolicy(
+        name:String
+        slug:String
+        is_guest:Int
+        is_volunteer:Int
+        hours:Int
+        is_deleteable:Int
+        description:String
+        time_breakup:JSON
+        status:Int
+    ): String @guard @inject(context:"user.id",name:"created_by") @field(resolver:"App\\GraphQL\\Mutations\\Policies\\UpdatePolicy")
+
+    deletePolicy(id:ID!):Policy! @guard @field(resolver:"App\\GraphQL\\Mutations\\Policies\\DeletePolicy")
+
+}
+
+#import policiesPermission.graphql

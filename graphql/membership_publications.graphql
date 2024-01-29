@@ -1,0 +1,35 @@
+
+"Account of a person who utilizes this application."
+type MembershipPublication {
+    "Unique primary key."
+    id: ID!
+    name: String
+    membership_id: Int
+    membership: Membership @belongsTo
+    status: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    membership_publication(
+      "Search by primary key."
+      id: ID @eq
+    ): MembershipPublication @find
+
+    all_membership_publications: [MembershipPublication!]! @all
+     membership_publications(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [MembershipPublication!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createMembershipPublication(name: String,membership_id: Int,status:Int): MembershipPublication! @create @guard @inject(context:"user.id",name:"created_by")  
+    deleteMembershipPublication(id: ID!): MembershipPublication! @delete @guard  @inject(context:"user.id",name:"deleted_by")  
+    updateMembershipPublication(id: ID!,name: String,membership_id: Int,status:Int): MembershipPublication! @update @guard   @inject(context:"user.id",name:"updated_by")
+}

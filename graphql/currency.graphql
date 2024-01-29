@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type Currency {
+    id:ID!
+    name:String!
+    code:String!
+    symbol:String!
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    currency(
+      "Search by primary key."
+      id: ID @eq
+    ): Currency @find
+
+    all_currencies: [Currency!]! @all @orderBy(column: "name", direction: ASC)
+
+    currencies(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [Currency!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCurrency(name: String!,code: String!,symbol: String!): Currency! @create  @guard @inject(context:"user.id",name:"created_by")  
+    updateCurrency(id: ID!,name: String,code: String!,symbol: String!): Currency! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteCurrency(id: ID!): Currency! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

@@ -1,0 +1,84 @@
+type PromotionCodeProduct{
+     id: ID!
+     model_type:String
+     model_id: Int
+     promotion_code_id: Int
+}
+type PromotionCode {
+    id: ID!
+    promotion_type: String
+    value: String
+    promotion_code: String
+    usage_limit: Int
+    no_of_times_used: Int
+    description: String
+    error_message_line1: String
+    error_message_line2: String
+    error_message_exceeded: String
+    approved_by: String
+    created_by: Int
+    updated_by: Int
+    status: Int
+    valid_from: DateTime
+    valid_from_date:Date
+    valid_to: DateTime
+    valid_to_date: Date
+    deleted_by: Int
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+    promotionCodeProduct:[PromotionCodeProduct!]! @hasMany
+}
+
+
+extend type Query {
+    all_promotion_code: [PromotionCode!]! @all
+    promo_code(id: ID @eq): PromotionCode @find
+    promotion_codes(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["promotion_type","value","id","promotion_code","usage_limit"])
+    ): [PromotionCode!]! @paginate(defaultCount: 10)
+
+    get_promotion_code_products: String @field(resolver:"App\\GraphQL\\Queries\\PromotionCode\\PromotionCodeProducts")
+}
+
+extend type Mutation {
+    createPromotionCode(promotion_type: String
+        ,value: Int
+        ,promotion_code: String
+        ,usage_limit: Int
+        ,no_of_times_used: Int
+        ,description: String
+        ,error_message_line1: String
+        ,error_message_line2: String
+        ,error_message_exceeded: String
+        ,approved_by: String
+        ,valid_from:Date
+        ,valid_to:Date
+        ,description:String
+        ,status: Int
+        ,promotionCodeProduct:String
+        ): PromotionCode @field(resolver:"App\\GraphQL\\Mutations\\PromoCode\\CreatePromoCode")
+
+
+    updatePromotionCode(id: ID!,promotion_type: String
+        ,value: Int
+        ,promotion_code: String
+        ,usage_limit: Int
+        ,no_of_times_used: Int
+        ,description: String
+        ,error_message_line1: String
+        ,error_message_line2: String
+        ,error_message_exceeded: String
+        ,approved_by: String
+        ,valid_from:Date
+        ,valid_to:Date
+        ,description:String
+        ,status: Int
+        ,promotionCodeProduct:String
+        ): PromotionCode @field(resolver:"App\\GraphQL\\Mutations\\PromoCode\\UpdatePromoCode")
+
+   deletePromoCode(id: ID!): PromotionCode @delete
+
+   checkPromoCode(code:String,amount:Int,product_type:String,product_id:Int): String @field(resolver:"App\\GraphQL\\Mutations\\PromoCode\\GetCode")
+}

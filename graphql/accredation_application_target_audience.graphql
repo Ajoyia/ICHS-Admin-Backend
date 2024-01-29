@@ -1,0 +1,70 @@
+
+"Account of a person who utilizes this application."
+type AccredationApplicationTargetAudience {
+    "Unique primary key."
+    id: ID!
+    audience_type: Int
+    acc_application_id: Int
+    total_learners: String
+    role_id: Int
+    is_fee: Int
+    fee: Float
+    status: Int
+    currency_id:Int
+    specialty_other:String
+    type_others: String
+    accredation_target_audience: AccredationTargetAudience @belongsTo
+    speciality_ids: [String]
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_application_target_audience(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationApplicationTargetAudience @find
+
+    all_accredation_application_target_audiences: [AccredationApplicationTargetAudience!]! @all
+
+     accredation_application_target_audiences(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name","mobile_no","email"])
+    ): [AccredationApplicationTargetAudience!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationApplicationTargetAudience(
+        audience_type: Int
+        acc_application_id: Int
+        total_learners: Int
+        role_id: Int
+        is_fee: Int
+        fee: Float
+        currency_id: Int
+        specialty_other:String
+        type_others: String
+        status: Int): AccredationApplicationTargetAudience! @create @guard  @inject(context:"user.id",name:"created_by")
+
+    deleteAccredationApplicationTargetAudience(id: ID!): AccredationApplicationTargetAudience! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateAccredationApplicationTargetAudience(
+        id: ID!
+        audience_type: Int
+        acc_application_id: Int
+        total_learners: Int
+        role_id: Int
+        is_fee: Int
+        fee: Float
+        currency_id:Int
+        specialty_other:String
+        type_others: String
+        status: Int): AccredationApplicationTargetAudience! @update @guard @inject(context:"user.id",name:"updated_by")
+
+    createAccredationTargetSpeciality(target_audience_id: Int, speciality_id: [String]): String
+        @field(resolver: "App\\GraphQL\\Mutations\\AccredationTargetAudiences\\TargetSpecialty")
+}

@@ -1,0 +1,28 @@
+
+"Account of a person who utilizes this application."
+type JobsTitle {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    jobs_title(
+      "Search by primary key."
+      id: ID @eq
+    ): JobsTitle @find
+
+    all_job_titles: [JobsTitle!]! @all
+
+     job_titles(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [JobsTitle!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createJobTitle(name:  String!,status: String!): String @guard @field(resolver:"App\\GraphQL\\Mutations\\JobTitles\\CreateJobTitle")          
+    deleteJobTitle(id: ID!): String  @guard @field(resolver:"App\\GraphQL\\Mutations\\JobTitles\\DeleteJobTitle")
+    updateJobTitle(id: ID!,name:String,status: String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\JobTitles\\UpdateJobTitle")
+}

@@ -1,0 +1,35 @@
+
+"Account of a person who utilizes this application."
+type ContactQuery {
+    "Unique primary key."
+    id: ID!
+    name: String
+    email: String
+    organization:String
+    subject:String
+    message:String
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+extend type Query {
+    
+
+    contactEmail(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["name","email"])
+    ): [ContactQuery!]! @paginate(defaultCount: 10)
+}
+
+
+extend type Mutation {
+    createContactQuery(
+        name:  String
+        email: String
+        organization: String
+        subject: String
+        message: String
+    ): String!  @field(resolver:"App\\GraphQL\\Mutations\\ContactQuery\\Create")
+    
+}

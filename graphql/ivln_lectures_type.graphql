@@ -1,0 +1,32 @@
+
+type IvlnLecturesType {
+    id:ID!
+    name:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    IvlnLectureTypes(
+      id: ID @eq
+    ): IvlnLecturesType @find
+
+    all_IvlnLectureTypes: JSON @field(resolver:"App\\GraphQL\\Queries\\GetLectureTypes")
+
+    IvlnLectureTypesPagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [IvlnLecturesType!]! @paginate(defaultCount: 10)
+
+}
+
+extend type Mutation {
+    createLectureType(name: String!,status: Int!): IvlnLecturesType! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateLectureType(id: ID!,name: String,status: Int): IvlnLecturesType! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteLectureType(id: ID!): IvlnLecturesType! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

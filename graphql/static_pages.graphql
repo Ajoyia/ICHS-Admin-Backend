@@ -1,0 +1,47 @@
+type StaticPage {
+    id: ID!
+    title: String
+    detail: String
+    slug: String
+    parent_id: Int
+    status: Int
+    content:String
+    menu_items:[MenuItem] @hasMany
+    static_page:StaticPage @belongsTo
+    tags:TagKeyWord @hasOne
+
+}
+
+extend type Query {
+    static_page(
+      "Search by primary key."
+      id: ID @eq
+    ): StaticPage @find
+
+
+    get_content(slug:String @eq) : StaticPage @find
+
+    all_static_pages: [StaticPage!]! @all
+    
+     static_pages(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["title"])
+    ): [StaticPage!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createStaticPage(
+                        title:  String!
+                        detail: String!
+                        parent_id: String!
+                    ): String @guard @field(resolver:"App\\GraphQL\\Mutations\\StaticPages\\CreateStaticPage")
+                 
+    deleteStaticPage(id: ID!): String  @guard @field(resolver:"App\\GraphQL\\Mutations\\StaticPages\\DeleteStaticPage")
+    updateStaticPage(id: ID!
+                    title:  String
+                    detail: String
+                    slug: String
+                    parent_id: String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\StaticPages\\UpdateStaticPage")
+
+
+
+}

@@ -1,0 +1,3 @@
+extend type Query{
+    test:String @field(resolver:"App\\GraphQL\\Queries\\Test")
+}

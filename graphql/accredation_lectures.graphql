@@ -1,0 +1,113 @@
+
+type AccLectureInteractiveTechnology {
+    id: ID
+    name: String
+}
+type AccLectureAudioVisual {
+    id: ID
+    name: String
+}
+
+type AccredationLecture {
+    "Unique primary key."
+    id: ID!
+    name: String
+    heading: String
+    featured: Int
+    description: String
+    special_accommodations: String
+    learning_objectives: String
+    break_time: String
+    audio_visual_other: String
+    interactive_technology_other: String
+    presentation_format_other: String
+    audio_visual_id: Int
+    interactive_technology_id: Int
+    presentation_format_id: Int
+    presentation_format:AccredationPresentationFormat @belongsTo
+    interactive_technology:AccredationInteractiveTechnology @belongsTo
+    audio_visual:AccredationLectureAudioVisual @belongsTo
+    lecture_interactive_technology:[AccLectureInteractiveTechnology] @belongsToMany
+    lecture_audio_visual:[AccLectureAudioVisual] @belongsToMany
+    starttime: DateTime
+    endtime: DateTime
+    break: Int
+    order: Int
+    session_location_id: Int
+    status: Int
+    acc_session_id: Int
+    acc_id: Int
+    lecture_location:AccredationLocation
+    session_speaker:[AccredationSessionSpeaker] @morphMany (type: "paginator")
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_lecture(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationLecture @find
+
+    all_accredation_lectures: [AccredationLecture!]! @all
+
+    accredation_lectures(
+        orderBy: [OrderByClause!]! @orderBy): [AccredationLecture!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+
+    createAccredationLecture(
+        name: String
+        featured: Int
+        description: String
+        starttime: DateTime
+        endtime: DateTime
+        break: Int
+        order: Int
+        session_location_id: Int
+        acc_session_id: Int
+        status: Int
+        file:Upload
+        special_accommodations: String
+        learning_objectives: String
+        break_time: String
+        audio_visual_other: String
+        interactive_technology_other: String
+        presentation_format_other: String
+        audio_visual_id: [String]
+        interactive_technology_id: [String]
+        presentation_format_id: Int
+        acc_id: Int): AccredationLecture! @guard @field(resolver: "App\\GraphQL\\Mutations\\AccredationLecture\\Create")
+
+    deleteAccredationLecture(id: ID!): AccredationLecture! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    updateAccredationLecture(
+        id: ID!
+        name: String
+        featured: Int
+        description: String
+        starttime: DateTime
+        endtime: DateTime
+        break: Int
+        order: Int
+        session_location_id: Int
+        file:Upload
+        special_accommodations: String
+        learning_objectives: String
+        break_time: String
+        audio_visual_other: String
+        interactive_technology_other: String
+        presentation_format_other: String
+        audio_visual_id: Int
+        interactive_technology_id: [String]
+        audio_visual_id: [String]
+        acc_session_id: Int
+        status: Int
+        presentation_format_id: Int
+        acc_id: Int): AccredationLecture! @guard @field(resolver: "App\\GraphQL\\Mutations\\AccredationLecture\\Update")
+}

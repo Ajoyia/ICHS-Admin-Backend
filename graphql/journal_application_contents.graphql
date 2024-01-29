@@ -1,0 +1,119 @@
+type JournalApplicationContent {
+    "Unique primary key."
+    id: ID!
+    journal_application_id: Int!
+    title: String
+    abstract: String
+    author_info: String
+    keywords: String
+    background: String
+    main_text: String
+    introduction: String
+    body: String
+    technical_note_structure: String
+    lessons_learned: String
+    methods: String
+    case_description: String
+    result: String
+    discussion: String
+    conclusion: String
+    summary: String
+    acknowledgement: String
+    conflict_of_interst: String
+    references: String
+    declaration: String
+    appendix: String
+    material_figures: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime 
+}
+
+input CreateJournalApplicationContent {
+    journal_application_id: Int
+    title: String
+    abstract: String
+    author_info: String
+    keywords: String
+    background: String
+    main_text: String
+    introduction: String
+    body: String
+    technical_note_structure: String
+    lessons_learned: String
+    methods: String
+    case_description: String
+    result: String
+    discussion: String
+    conclusion: String
+    summary: String
+    acknowledgement: String
+    conflict_of_interst: String
+    references: String
+    declaration: String
+    appendix: String
+    material_figures: String
+}
+
+input UpdateJournalApplicationContent {
+    id:ID!
+    journal_application_id: Int
+    title: String
+    abstract: String
+    author_info: String
+    keywords: String
+    background: String
+    main_text: String
+    introduction: String
+    body: String
+    technical_note_structure: String
+    lessons_learned: String
+    methods: String
+    case_description: String
+    result: String
+    discussion: String
+    conclusion: String
+    summary: String
+    acknowledgement: String
+    conflict_of_interst: String
+    references: String
+    declaration: String
+    appendix: String
+    material_figures: String
+}
+
+extend type Query {
+    
+    JournalApplicationContent(
+      "Search by primary key."
+      id: ID @eq
+    ): JournalApplicationContent @find
+
+    
+
+    all_JournalApplicationContents: [JournalApplicationContent!]! @all
+
+    JournalApplicationContents(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [JournalApplicationContent!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createJournalApplicationContent(input: CreateJournalApplicationContent! @spread): 
+        JournalApplicationContent! @create @guard @inject(context:"user.id",name:"created_by")
+
+    JournalPay(
+        user_id:Int
+        promo_code_id:Int
+        package_id:Int
+        journal_id:Int
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\Journals\\JournalPay")
+
+    updateJournalApplicationContent(input: UpdateJournalApplicationContent! @spread): JournalApplicationContent! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteJournalApplicationContent(id: ID!): JournalApplicationContent! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

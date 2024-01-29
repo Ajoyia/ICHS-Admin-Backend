@@ -1,0 +1,30 @@
+
+"Account of a person who utilizes this application."
+type Tax {
+    "Unique primary key."
+    id: ID!
+    name: String
+    rate: Float
+    tax_group_id: Int
+    tax_group:TaxGroup @belongsTo
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    tax(
+      "Search by primary key."
+      id: ID @eq
+    ): Tax @find
+
+    all_taxes: [Tax!]! @all
+    
+    taxes(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","rate"])
+    ): [Tax!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createTax(name: String!,tax_group_id: String,rate:String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\Taxes\\CreateTax")          
+    deleteTax(id: ID!): String  @guard @field(resolver:"App\\GraphQL\\Mutations\\Taxes\\DeleteTax")
+    updateTax(id: ID!,name:String,tax_group_id: String,rate:String): String @guard @field(resolver:"App\\GraphQL\\Mutations\\Taxes\\UpdateTax")
+}

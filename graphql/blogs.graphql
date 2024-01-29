@@ -1,0 +1,77 @@
+"Account of a person who utilizes this application."
+type Blog {
+    "Unique primary key."
+    id: ID!
+    user_id: Int
+    tag_id: Int
+    title: String
+    description:String
+    body: String
+    feature: Int
+    image: String
+    user:User @belongsTo
+    tags:[Tags] @morphToMany
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}
+
+type Tags {
+    id:ID!
+    title:String
+}
+
+extend type Query {
+    all_blogs: [Blog!]! @all
+    feature_blogs(feature:Int @eq): [Blog!]! @all
+    blogs(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["title"], handler: "App\\Blogs")
+    ): [Blog!]! @paginate(defaultCount: 10)
+
+    getallblogs(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["title"])
+    ): [Blog!]! @paginate(defaultCount: 10)
+    blog(
+      "Search by primary key."
+      id: ID @eq
+    ): Blog @Find
+}
+
+extend type Mutation {
+    createBlog(
+        description:String
+        user_id: Int
+        blog_title: String
+        body: String
+        feature: String
+        image: Upload
+        tag_title:String
+        feature:Int
+    ): Blog @field(resolver: "App\\GraphQL\\Mutations\\Blogs\\Create")
+
+    updateBlog(
+        description:String
+        id: ID!
+        user_id: Int
+        tag_title:String
+        blog_title: String
+        body: String
+        feature: String
+        image: Upload
+        feature:Int
+    ): Blog @guard @field(resolver: "App\\GraphQL\\Mutations\\Blogs\\Update")
+    
+    deleteBlog(id: ID!): Blog
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+}
+
+

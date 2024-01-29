@@ -1,0 +1,36 @@
+type Language{
+    id:ID!
+    name:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    Language(
+      id: ID! @eq
+    ): Language @find @guard
+
+    all_languages: [Language!]! @all
+
+    languages(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [Language!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createLanguage(
+        name: String!,
+        status: Int,
+        ): Language! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateLanguage(
+        id: ID!,
+        name: String,
+        status: Int
+        ): Language! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteLanguage(id: ID!): Language! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

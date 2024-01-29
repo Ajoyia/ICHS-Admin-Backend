@@ -1,0 +1,144 @@
+type Grant {
+    id:ID!
+    other_specialty:String
+    executive_director_name:String
+    executive_director_phone_no:String
+    executive_director_email:String
+    program_director_name:String
+    program_director_phone_no:String
+    program_director_email:String
+    educational_activity_type_other:String
+    specify_type_other:String
+    organization:String
+    year_founded:Date
+    country:Country @belongsTo
+    state:State @belongsTo
+    city:City @belongsTo
+    zip_code:String
+    organization_vision:String
+    organization_history:String
+    outline_current_activities:String
+    accomplishments:String
+    activity:String
+    start_date:Date
+    end_date:Date
+    activity_goals:String
+    executive_summary:String
+    chapter:Chapter @belongsTo
+    beneficiaries_number:String
+    specialities:String
+    benefiting_area:String
+    expenses_amount:Int
+    revenue_amount:Int
+    requested_amount:Int
+    expenses_file_path:String
+    revenues_file_path:String
+    grant_expenses_file_path:String
+    initials_director:String
+    initials_executive_director:String
+    agreement_accepted:Boolean
+    approved:Boolean
+    grant_reason:String
+    user:User @belongsTo
+    grantPurpose:GrantPurpose @belongsTo
+    remarks:[Remark] @morphMany
+    submission_status:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    speciality_ids:[String]
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    Grant(
+      "Search by primary key."
+      id: ID @eq
+    ): Grant @Find
+
+    all_Grants: [Grant!]! @all
+
+    Grants(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["user"], handler: "App\\Grants")
+    ): [Grant!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createGrant(
+        executive_director_name:String
+        educational_activity_type_other:String
+        specify_type_other:String
+        executive_director_phone_no:String
+        executive_director_email:String
+        program_director_name:String
+        program_director_phone_no:String
+        program_director_email:String
+        organization:String
+        year_founded:Date
+        country_id:Int
+        state_id:Int
+        city_id:Int
+        zip_code:String
+        organization_vision:String
+        organization_history:String
+        outline_current_activities:String
+        accomplishments:String
+    ): Grant! @create  @guard @inject(context:"user.id",name:"created_by") @inject(context:"user.id",name:"user_id")
+
+    updateGrant(
+        id: ID!
+        other_specialty:String
+        executive_director_name:String
+        executive_director_phone_no:String
+        executive_director_email:String
+        program_director_name:String
+        program_director_phone_no:String
+        program_director_email:String
+        organization:String
+        year_founded:Date
+        country_id:Int
+        state_id:Int
+        city_id:Int
+        zip_code:String
+        organization_vision:String
+        organization_history:String
+        outline_current_activities:String
+        accomplishments:String
+        activity:String
+        start_date:Date
+        end_date:Date
+        activity_goals:String
+        executive_summary:String
+        chapter_id:Int
+        educational_activity_type_other:String
+        specify_type_other:String
+        beneficiaries_number:String
+        specialities:String
+        benefiting_area:String
+        expenses_amount:Int
+        revenue_amount:Int
+        requested_amount:Int
+        expenses_file_path:Upload
+        revenues_file_path:Upload
+        grant_expenses_file_path:Upload
+        initials_director:String
+        initials_executive_director:String
+        agreement_accepted:Boolean
+        user_id:Int
+        grantPurpose_id:Int
+        grant_reason:String
+        approved:Boolean
+        submission_status:String
+        status:Int
+    ): Grant! @guard @field(resolver:"App\\GraphQL\\Mutations\\Grants\\UpdateGrant")
+
+    deleteGrant(id: ID!): Grant! @guard @delete @inject(context:"user.id",name:"deleted_by")
+
+
+    createGrantSpeciality(grant_id: Int, speciality_id: [String]): String
+        @field(resolver: "App\\GraphQL\\Mutations\\Grants\\CreateSpecialty")
+}

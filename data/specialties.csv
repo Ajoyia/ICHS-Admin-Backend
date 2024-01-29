@@ -1,0 +1,434 @@
+﻿name,parent_id
+Allergy and Immunology,
+Critical Care Medicine,1
+Hospice and Palliative Care,1
+Pain Medicine,1
+Pediatric Anesthesiology,1
+Sleep Medicine,1
+Bariatric Medicine,
+Critical Care Medicine,
+Coronary Intensive Care ,8
+Medical Intensive Care ,8
+Neonatal Intensive Care ,8
+Neuroscience Critical Care ,8
+Pediatric Intensive Care ,8
+Shock/Trauma Intensive-Care ,8
+Surgical Intensive Care ,8
+Dental,
+Cosmetic Dentistry,16
+Dental Anesthesiology ,16
+Dental Assisting,16
+Dental Hygiene,16
+Dental Public Health ,16
+Endodontic,16
+General Dentistry,16
+Geriatric Dentistry,16
+Implantology,16
+Oral Medicine,16
+Oral and Maxillofacial Pathology ,16
+Oral and Maxillofacial Radiology,16
+Oral and Maxillofacial Surgery,16
+Orofacial Pain,16
+Orthodontic,16
+Pedodontic,16
+Periodontic ,16
+Prosthodontic,16
+Restorative Dentistry,16
+Dermatology,
+Dermatopathology,36
+Pediatric Dermatology,36
+Procedural Dermatology,36
+Diagnostic Radiology,
+Abdominal Radiology,40
+Breast Imaging,40
+Cardiothoracic Radiology,40
+Cardiovascular Radiology,40
+Chest Radiology,40
+Emergency Radiology,40
+Endovascular Surgical Neuroradiology,40
+Gastrointestinal Radiology,40
+Genitourinary Radiology,40
+Head and neck Radiology,40
+Interventional Radiology,40
+Musculoskeletal Radiology,40
+Neuroradiology,40
+Nuclear Radiology,40
+Pediatric Radiology,40
+Radiation Oncology,40
+Vascular and Interventional Radiology,40
+Emergency Medicine,
+Anesthesiology Critical Care Medicine,58
+Emergency Medical Services,58
+Hospice and Palliative Medicine,58
+Internal Medicine/Critical Care Medicine,58
+Medical Toxicology,58
+Pain Medicine,58
+Pediatric Emergency Medicine,58
+Sports Medicine,58
+Undersea and Hyperbaric Medicine,58
+Family Medicine,
+Adolescent Medicine,68
+Geriatric Medicine,68
+Hospice and Palliative Medicine,68
+Pain Medicine,68
+Sleep Medicine,68
+Sports Medicine,68
+Internal Medicine,
+Advanced Heart Failure and Transplant Cardiology,75
+Cardiovascular Disease,75
+Clinical Cardiac Electrophysiology,75
+Critical Care Medicine,75
+"Endocrinology, Diabetes, And Metabolism",75
+Gastroenterology,75
+Hematology,75
+Hematology and Oncology,75
+Geriatric Medicine,75
+Infectious Disease,75
+Hepatitis,85
+HIV/AIDS,85
+Malaria,85
+Pediatric Infectious Disease,85
+Public Health,85
+Tropical Medicine,85
+Transplant Infectious Disease,85
+Tuberculosis,85
+Internal Medicine,75
+Interventional Cardiology,75
+Nephrology,75
+Critical Care Nephrology,97
+Interventional Nephrology - involving Ultrasound-Guided Procedures,97
+Kidney Dialysis - including Arteriovenous Fistula Surgery,97
+Kidney Transplantation,97
+Onconephrology - involving Cancer-Related Kidney Diseases,97
+Pediatric Nephrology,97
+Oncology,75
+Radiation Oncology ,103
+Surgical Oncology,103
+Medical Oncology ,103
+Interventional Oncology ,103
+Gynecologic Oncology ,103
+Pediatric Oncology ,103
+Neuro-Oncology ,103
+Hemato-Oncology ,103
+Uro-Oncology ,103
+Pediatric Internal Medicine,75
+Pulmonary Disease,75
+Pulmonary Disease and Critical Care Medicine,75
+Rheumatology,75
+Sleep Medicine,75
+Sports Medicine,75
+Transplant Hepatology,75
+Leadership and Management – Medical and Health ,
+Governance,120
+Leadership – C-Suite,120
+Directors,120
+Managers,120
+Supervisors,120
+Medical Genetics,
+Biochemical Genetics,126
+Clinical Cytogenetics ,126
+Clinical Genetics,126
+Molecular Genetic Pathology,126
+Nutritionist,
+Clinical Dietitian,131
+College Nutritionist,131
+Corporate Wellness Consultant,131
+Eating Disorder Nutritionist,131
+Gerontological Nutritionist,131
+Food Safety Auditor,131
+Health Coach,131
+Holistic Nutritionist,131
+Life Coach,131
+Nutrition Educator,131
+Nutrition Therapist,131
+Oncology Nutritionist,131
+Pediatric Nutritionist,131
+Personal Nutritionist,131
+Public Health Nutritionist ,131
+Renal Nutritionist,131
+Sports Nutritionist,131
+Neurology,
+Brain Injury Medicine,149
+Child Neurology,149
+Clinical Neurophysiology,149
+Endovascular Surgical Neuroradiology,149
+Hospice and Palliative Medicine,149
+Neurodevelopmental Disabilities,149
+Neuromuscular Medicine,149
+Pain Medicine,149
+Sleep Medicine,149
+Vascular Neurology,149
+Nuclear Medicine,
+Nursing ,
+Advanced Practice Registered Nursing,161
+Ambulatory Care Nursing,161
+Business in Nursing,161
+Bariatric Nursing,161
+Camp Nursing,161
+Cardiac Care Nursing,161
+Cardiac Cath Lab Nursing,161
+Case Management Nursing,161
+Clinical Nurse Leader,161
+Clinical Nurse Specialist,161
+Community Health Nursing,161
+Complementary Health Nursing,161
+Correctional Facility Nursing,161
+Critical Care Nursing,161
+Dermatology Nursing,161
+Developmental Disability Nursing,161
+Diabetes Nursing,161
+Dialysis Nursing,161
+Domestic Violence Nursing,161
+Emergency Nursing,161
+Ethics in Nursing,161
+Family Nursing,161
+Flight/Transport Nursing,161
+Forensic Nursing,161
+Gastroenterology Nursing,161
+Genetic Nursing,161
+Geriatric Nursing ,161
+Gerontological Nursing,161
+Gynecology/Obstetric Nursing,161
+Health Policy Nursing,161
+HIV/AIDS Nursing,161
+Holistic Nursing,161
+Home Health Care Nursing ,161
+Hospice/Palliative Nursing,161
+Independent Living Nursing,161
+Infection Control Nursing,161
+Informatics Nursing,161
+Infusion Nursing,161
+International Nursing,161
+Labor and Delivery Nursing,161
+Lactation Consultation Nursing,161
+Legal Nurse Consultant,161
+Licensed Practical Nursing,161
+Long-Term Care Nursing,161
+Managed Care Nursing,161
+Medical-Surgical Nursing,161
+Military and Uniformed Service Nursing,161
+Missionary Nursing,161
+Neonatal Intensive Care Nursing,161
+Nephrology Nursing,161
+Neuroscience Nursing ,161
+Nurse Anesthetist,161
+Nurse Attorney,161
+Nurse Educator,161
+Nurse Legislator,161
+Life Care Planning Nursing,161
+Nurse Midwife,161
+Nurse Practitioner,161
+Nurse Researcher,161
+Nursing Advocacy,161
+Nursing Entrepreneur ,161
+Nursing Executive and Nursing CEO,161
+Nursing Manager and Nursing Administration,161
+Nursing Quality Improvement,161
+"Nursing Writer, Author and Historian",161
+Occupational Health Nurse,161
+Oncology Nursing – Cancer Nursing,161
+Operating Room Nursing – Perioperative Nursing,161
+Ophthalmic Nursing ,161
+Orthopedic Nursing ,161
+Otorhinolaryngology Nursing – Head and Neck Nursing,161
+"Overseas, Volunteer, Missionary or Refugee Nursing",161
+Pain Management Nursing,161
+Parish Nursing ,161
+Pediatric Nurse Practitioner,161
+Pediatric Nurse ,161
+Peri-anesthesia Nursing – Pre-anesthesia and Post-anesthesia Nursing ,161
+Perinatal Nursing,161
+Plastic Surgery Nursing,161
+Poison Information Specialist,161
+Psychiatric Nurse Practitioner,161
+Psychiatric Nursing,161
+Public Health Nurse,161
+Pulmonary Care Nursing – Respiratory Nursing ,161
+Radiology Nursing,161
+Registered Nurse,161
+Rehabilitation Nursing,161
+Reproductive Nursing,161
+Rheumatology Nursing,161
+Sexual Assault Nurse Examiner,161
+School Nursing,161
+Subacute Nursing,161
+Substance Abuse Nursing,161
+Supplemental/Agency Nursing,161
+Surgical Nursing,161
+Telemetry Nursing,161
+Telephone Triage Nursing ,161
+Toxicology Nursing,161
+Transcultural Nursing,161
+Transplant Nursing,161
+Trauma Nursing,161
+Travel Nursing,161
+Triage Nursing,161
+Urologic Nursing,161
+Obstetrics and Gynecology,
+Female Pelvic Medicine and Reconstructive Surgery,266
+Gynecologic Oncology,266
+Maternal-Fetal Medicine,266
+Reproductive Endocrinologists and Infertility,266
+Ophthalmology,
+Anterior Segment/Cornea Ophthalmology,271
+Glaucoma Ophthalmology,271
+Neuro-Ophthalmology,271
+Ocular Oncology,271
+Oculoplastics/Orbit,271
+Ophthalmic Plastic and Reconstructive Surgery,271
+Retina/Uveitis,271
+Strabismus/Pediatric Ophthalmology,271
+Otolaryngology,
+Facial Plastic and Reconstructive Surgery,280
+Head and Neck Oncology,280
+Laryngology,280
+Otology/Neurotology and Skull Base Surgery,280
+Pediatric Otolaryngology,280
+"Rhinology, Sinus and Anterior Endoscopic Skull Base Surgery",280
+Sleep Medicine and Surgery,280
+Pathology,
+Anatomical Pathology,288
+Blood Banking and Transfusion Medicine,288
+Chemical Pathology,288
+Endocrinology,291
+Routine Chemistry,291
+Toxicology,291
+Urinalysis,291
+Clinical Pathology,288
+Cytopathology,296
+Histopathology,296
+Oral Pathology,296
+Forensic Pathology,288
+Genetic Pathology,288
+Cytogenetics,301
+Hematology,288
+Immunopathology,288
+Medical Microbiology,288
+Bacteriology ,305
+Mycobacteriology,305
+Mycology,305
+Parasitology,305
+Virology,305
+Molecular Pathology,288
+Neuropathology,288
+Pediatric Pathology,288
+Serology,288
+General Immunology,314
+Syphilis Serology,314
+Pediatrics,
+Adolescent Medicine,317
+Child Abuse Pediatrics,317
+Developmental-Behavioral Pediatrics,317
+Neonatal-Perinatal Medicine,317
+Pediatric Cardiology,317
+Pediatric Critical Care Medicine,317
+Pediatric Endocrinology,317
+Pediatric Gastroenterology,317
+Pediatric Hematology-Oncology,317
+Pediatric Infectious Diseases,317
+Pediatric Nephrology,317
+Pediatric Pulmonology,317
+Pediatric Rheumatology,317
+Pediatric Sports Medicine,317
+Pediatric Transplant Hepatology,317
+Pharmacy,
+Ambulatory Care Pharmacy,333
+Cardiology Pharmacy,333
+Compounded Sterile Preparation Pharmacy,333
+Critical Care Pharmacy,333
+Emergency Medicine Pharmacy,333
+Geriatric Pharmacy,333
+Infectious Diseases Pharmacy,333
+Nuclear Pharmacy,333
+Nutrition Support Pharmacy,333
+Oncology Pharmacy,333
+Pediatric Pharmacy,333
+Pharmacotherapy,333
+Psychiatric Pharmacy,333
+Solid Organ Transplantation Pharmacy,333
+Physical Medicine and Rehabilitation,
+Brain Injury Medicine,348
+Hospice and Palliative Medicine,348
+Neuromuscular Medicine,348
+Pain Medicine,348
+Pediatric Rehabilitation Medicine,348
+Spinal Cord Injury Medicine,348
+Sports Medicine,348
+Preventive Medicine,
+Aerospace Medicine,356
+Medical Toxicology,356
+Occupational Medicine,356
+Public Health Medicine,356
+Psychiatry,
+Addiction Psychiatry,361
+Administrative Psychiatry,361
+Child and Adolescent Psychiatry,361
+Community Psychiatry,361
+Consultation/Liaison Psychiatry,361
+Emergency Psychiatry,361
+Forensic Psychiatry,361
+Geriatric Psychiatry,361
+Mental Retardation Psychiatry,361
+Military Psychiatry,361
+Pain Medicine,361
+Psychiatric Research,361
+Psychosomatic Medicine,361
+"Quality Improvement, Risk Management and Safety",
+Quality and Performance Improvement ,375
+Quality Consultant ,375
+Quality Surveyor,375
+Risk Management,375
+Safety Management,375
+Radiology Oncology,
+Hospice and Palliative Medicine,381
+Pain Medicine,381
+Respiratory Therapy,
+Surgery,
+Colon and Rectal Surgery,385
+General Surgery,385
+Surgical Critical Care,387
+Gynecologic Oncology,385
+Plastic Surgery,385
+Craniofacial Surgery,390
+Hand Surgery,390
+Neurological Surgery,385
+Endovascular Surgical Neuroradiology,393
+Ophthalmic Surgery,385
+Oral And Maxillofacial Surgery,385
+Orthopedic Surgery,385
+Adult Reconstructive Orthopedics,397
+Foot And Ankle Orthopedics,397
+Musculoskeletal Oncology,397
+Orthopedic Sports Medicine,397
+Orthopedic Surgery Of The Spine,397
+Orthopedic Trauma,397
+Pediatric Orthopedics,397
+Otolaryngology,385
+Pediatric Otolaryngology,405
+Otology Neurotology,385
+Pediatric Surgery,
+Neonatal,408
+Prenatal,408
+Trauma,408
+Pediatric Oncology,408
+"Surgical Intensivists, Specializing In Critical Care Patients",385
+Thoracic Surgery,385
+Congenital Cardiac Surgery,414
+Thoracic Surgery-Integrated,414
+Vascular Surgery,385
+Traumatology,
+Burn Care,418
+Maxillofacial Surgery,418
+Neurosurgery,418
+Orthopedic Trauma Surgery,418
+Trauma Rehabilitation,418
+Trauma Surgery,418
+Vascular Trauma Care,418
+Urology,
+Pediatric Urology,426
+Urologic Oncology,426
+Renal Transplant,426
+Male Infertility,426
+Calculi,426
+Female Urology,426
+Neurourology,426

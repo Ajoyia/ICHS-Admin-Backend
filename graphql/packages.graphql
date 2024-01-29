@@ -1,0 +1,60 @@
+
+"Account of a person who utilizes this application."
+type Package {
+    id:ID!
+    product_id:Int
+    tax_group_id:Int
+    label:String
+    product:Product @belongsTo
+    tax_group:TaxGroup @belongsTo
+    description:String
+    price:Float
+    page_from:Int
+    page_to:Int
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    package(
+      "Search by primary key."
+      id: ID @eq
+    ): Package @find
+    all_packages: [Package!]! @all
+
+    packages(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["label","price"])
+    ): [Package!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createPackage(
+        product_id:Int
+        tax_group_id:Int
+        description:String
+        price:Float
+        page_from:Int
+        label:String
+        page_to:Int
+        status:Int  
+        ): Package! @guard @create @inject(context:"user.id",name:"created_by")
+
+    updatePackage(
+        id:ID!
+        product_id:Int
+        tax_group_id:Int
+        description:String
+        price:Float
+        label:String
+        page_from:Int
+        page_to:Int
+        status:Int): Package! @guard @update @inject(context:"user.id",name:"updated_by")
+
+    deletePackage(id: ID!): Package! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

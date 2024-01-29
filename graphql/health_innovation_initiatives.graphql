@@ -1,0 +1,135 @@
+
+"Account of a person who utilizes this application."
+type HealthInnovationInitiative {
+    "Unique primary key."
+    id: ID!
+    user_id:Int
+    user:User @belongsTo
+    title: String
+    is_research_faculty_approved:Int
+    no_of_reviews_requested:Int
+    is_approved_london_office:Int
+    type_others: String
+    transactions:[TransactionDetail] @morphMany
+    keywords: String
+    conclusions: String
+    references: String
+    remarks:[Remark] @morphMany
+    statuses_id:Int
+    backgrounds: String
+    HIITypes:[HealthInnovationInitiativeType!] @belongsToMany
+    details: String
+    hii_authors(orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["first_name","last_name"])):[HIIAuthor] @morphMany (type: "paginator")
+    all_hii_authors:[HIIAuthor] @morphMany
+    declarations: String
+    file_path: String
+    publish_date:DateTime
+    status: Int
+    featured:Int
+    loggerActivities:[LoggerActivity] @morphMany
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    health_innovation_initiative(
+      "Search by primary key."
+      id: ID
+      admin:Boolean
+    ): HealthInnovationInitiative  @field( resolver:"App\\GraphQL\\Queries\\HealthInnovationInitiative\\findHII")
+
+    getViewsHII(id: ID):Int @field( resolver:"App\\GraphQL\\Queries\\HealthInnovationInitiative\\GetViews")
+
+    getPublishedHII: [HealthInnovationInitiative]  @field( resolver:"App\\GraphQL\\Queries\\HealthInnovationInitiative\\getPublishedHII")
+    getAllPublishedHII(search:String sorting:String type:Int data_count:Int): [HealthInnovationInitiative]  @field( resolver:"App\\GraphQL\\Queries\\HealthInnovationInitiative\\getAllPublishedHII")
+
+
+    hii_pending_approvals(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["updated_by","id"])
+    ): [HealthInnovationInitiative!]! @paginate(builder: "App\\GraphQL\\Queries\\HealthInnovationInitiative\\PendingHII")
+
+
+    all_health_innovation_initiatives: [HealthInnovationInitiative!]! @all
+
+     health_innovation_initiatives(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["user"], handler: "App\\HII")
+    ): [HealthInnovationInitiative!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+
+   HIIPay(
+        user_id:Int
+        promo_code_id:Int
+        package_id:Int
+        hii_id:Int
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\HealthInnovationInitiative\\HIIPay")
+
+
+    secondPaymentHII(
+        id:ID!
+        price:Int
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\HealthInnovationInitiative\\secondPaymentHII")
+
+    reviewRequired(
+        id:ID!
+    ): String
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\HealthInnovationInitiative\\ReviewRequired")
+
+    createHealthInnovationInitiative(
+        title: String
+        type_others: String
+        is_research_faculty_approved:Int
+        is_approved_london_office:Int
+        keywords: String
+        references: String
+        backgrounds: String
+        user_id:Int
+        statuses_id:Int
+        conclusions: String
+        details: String
+        declarations: String
+        file_path: Upload
+        status: Int
+        featured:Int
+    ): HealthInnovationInitiative! @create @guard @inject(context:"user.id",name:"created_by")
+
+    deleteHealthInnovationInitiative(id: ID!): HealthInnovationInitiative! @delete @guard @inject(context:"user.id",name:"deleted_by")
+
+    completeHIIApplication(id:ID!): String @guard @field(resolver:"App\\GraphQL\\Mutations\\HealthInnovationInitiative\\completeHIIApplication")
+
+
+    updateHealthInnovationInitiative(
+        id: ID!
+        title: String
+        is_research_faculty_approved:Int
+        is_approved_london_office:Int
+        user_id:Int
+        type_others: String
+        keywords: String
+        references: String
+        backgrounds: String
+        statuses_id:Int
+        conclusions: String
+        details: String
+        declarations: String
+        file_path: Upload
+        status: Int
+        featured:Int
+    ): HealthInnovationInitiative! @update @guard @inject(context:"user.id",name:"updated_by")
+
+    updateHIITypes(id:ID!,HIIType:[Int]): String @guard @field(resolver:"App\\GraphQL\\Mutations\\HealthInnovationInitiative\\updateHIITypes")
+    uploadHIIDocument(id:ID!,file_path:Upload): Package! @guard @field(resolver:"App\\GraphQL\\Mutations\\HealthInnovationInitiative\\uploadHIIDocument")
+}

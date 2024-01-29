@@ -1,0 +1,32 @@
+
+type IvlnTemplate {
+    id:ID!
+    name:String
+    detail:String
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    IvlnTemplate(
+      id: ID @eq
+    ): IvlnTemplate @find
+
+    all_IvlTemplates: [IvlnTemplate!]! @all
+
+    templatePagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","detail"])
+    ): [IvlnTemplate!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+    createTemplate(name: String!,detail: String,status: Int!): IvlnTemplate! @create  @guard @inject(context:"user.id",name:"created_by")
+    updateTemplate(id: ID!,name: String,detail: String,status: Int): IvlnTemplate! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteTemplate(id: ID!): IvlnTemplate! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

@@ -1,0 +1,32 @@
+type Nationality{
+    id:ID!
+    name:String!
+    status:Int
+    createdBy:User
+    updatedBy:User
+    deletedBy:User
+    created_at:DateTime
+    updated_at:DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single policy by an identifying attribute."
+    nationality(id: ID @eq): Nationality @find
+    decrypt(amount:String,url:String) : JSON
+    all_nationalities(orderBy: [OrderByClause!]! @orderBy): [Nationality!]! @all
+
+     nationalities(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [Nationality!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+    createNationality(name:String!,status:Int!): Nationality! @create @guard @inject(context:"user.id",name:"created_by")
+
+    updateNationality(id:ID!,name:String!,status:Int): Nationality! @update @guard @inject(context:"user.id",name:"updated_by")
+
+    deleteNationality(id:ID!): Nationality! @delete @guard @inject(context:"user.id",name:"deleted_by")
+}
+

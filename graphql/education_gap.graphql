@@ -1,0 +1,47 @@
+
+type EducationalGap {
+    id:ID!
+    education_gap_type_id:Int!
+    specific_areas:String
+    objectives:String
+    improvements:String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    education_gap(
+      id: ID @eq
+    ): EducationalGap @find
+
+    all_education_gaps: [EducationalGap!]! @all
+
+    education_gaps(
+        orderBy: [OrderByClause!]! @orderBy,
+
+        where:_@whereConditions(columns:["name"])
+    ): [EducationalGap!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createEducationalGap(
+        education_gap_type_id: Int!
+        cme_application_id: Int
+        specific_areas:String
+        objectives:String
+        improvements:String
+    ): EducationalGap! @create  @guard @inject(context:"user.id",name:"created_by")
+
+    updateEducationalGap(
+        id: ID!
+        education_gap_type_id: Int!
+        cme_application_id: Int
+        specific_areas:String
+        objectives:String
+        improvements:String
+    ): EducationalGap! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteEducationalGap(id: ID!): EducationalGap! @delete @guard @inject(context:"user.id",name:"deleted_by")
+}

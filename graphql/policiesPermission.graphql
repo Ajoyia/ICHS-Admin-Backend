@@ -1,0 +1,72 @@
+type PolicyPermission{
+    id:ID!
+    name:String!
+    slug:String
+    policy:Policy @belongsTo
+    status:Boolean
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at:String
+    updated_at:String
+    deleted_at:DateTime
+}
+type staticPolicyPermissions{
+    user_permissions:[String]
+    policy_permissions:[String]
+    acess_permissions:[String]
+    menu_items_permissions:[String]
+    menu_types_permissions:[String]
+    html_templates_permissions:[String]
+    pages_permissions:[String]
+    file_manager_permissions:[String]
+    specialities_permissions:[String]
+    job_titles_permissions:[String]
+    tax_group_permissions:[String]
+    taxes_permissions:[String]
+    nationalities_permissions:[String]
+    products_permissions:[String]
+    product_country_type_permissions:[String]
+    add_members_permissions:[String]
+    membership_permissions:[String]
+    notification_senders_permissions:[String]
+    automated_notification_permissions:[String]
+}
+extend type Query{
+    "Find a single permission by an identifying attribute."
+    policyPermission(id: ID @eq): PolicyPermission @find @guard
+
+    all_policy_permissions: [PolicyPermission!]! @all
+
+    policyPermissions(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [PolicyPermission!]! @paginate(defaultCount: 10)
+    policyPremissionsNotOfAPolicy:[PolicyPermission!] @guard @field(resolver:"App\\GraphQL\\Queries\\PoliciesPermission\\policiesPermissionsNotOfAPolicy")
+    allStaticPermissions(permission_type:Int!):JSON @field(resolver:"App\\GraphQL\\Queries\\PoliciesPermission\\GetAllPermissions")
+}
+
+extend type Mutation{
+    createPolicyPermission(
+        name:String!
+        slug:String
+        status:Boolean
+        policy_id:ID
+    ): PolicyPermission! @guard @field(resolver:"App\\GraphQL\\Mutations\\PoliciesPermissions\\CreatePolicyPermission")
+
+    updatePolicyPermission(
+        id:ID!
+        name:String
+        slug:String
+        status:Boolean
+        policy_id:ID
+    ):PolicyPermission! @update @guard @inject(context:"user.id",name:"updated_by")
+
+    deletePolicyPermission(id:ID!):PolicyPermission @guard @field(resolver:"App\\GraphQL\\Mutations\\PoliciesPermissions\\DeletePolicyPermission")
+
+    updatePolicyPermissions(
+        id:ID!
+        permissions:[String!]!
+        flag:Int
+    ):Policy! @guard @field(resolver:"App\\GraphQL\\Mutations\\PoliciesPermissions\\UpdatePolicyPermissions")
+}

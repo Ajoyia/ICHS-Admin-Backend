@@ -1,0 +1,23 @@
+
+type ProductCountryTypeListing {
+    id:ID!
+    country_type_id:Int
+    cme_product_id:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+    country_type:CountriesType @belongsTo
+    cme_product:CMEProduct @belongsTo
+}
+
+extend type Query {
+    product_country_type_listing(
+      id: ID @eq
+    ): ProductCountryTypeListing @find
+
+    all_product_country_type_listings: [ProductCountryTypeListing!]! @all
+    
+}

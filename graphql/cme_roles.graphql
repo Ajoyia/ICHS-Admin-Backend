@@ -1,0 +1,41 @@
+
+"Account of a person who utilizes this application."
+type AllRoleLink{
+    link_roles:JSON
+}
+type CMERole {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    link_role: Int
+    cme_application_target_audience:[CMEApplicationTargetAudience] @hasMany
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_role(
+      "Search by primary key."
+      id: ID @eq
+    ): CMERole @find
+
+    role_links: AllRoleLink @field(resolver:"App\\GraphQL\\Queries\\Products\\GetAllProductLinks")
+    cme_roles_with_link_roles: [CMERole!]! @field(resolver:"App\\GraphQL\\Queries\\Variables\\GetNonNullCMERoles")
+    all_cme_roles: [CMERole!]! @all
+
+     cme_roles(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMERole!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMERole(name: String!,status: Int,link_role:Int): CMERole! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMERole(id: ID!): CMERole! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMERole(id: ID!,name:String,status: Int,link_role:Int): CMERole! @update @guard @inject(context:"user.id",name:"updated_by")
+}

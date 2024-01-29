@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type Salutation {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    salutation(
+      "Search by primary key."
+      id: ID @eq
+    ): Salutation @find
+
+    all_salutations: [Salutation!]! @all
+
+     salutations(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [Salutation!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createSalutation(name:  String!,status: Int): Salutation! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteSalutation(id: ID!): Salutation! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateSalutation(id: ID!,name:String,status: Int): Salutation! @update @guard @inject(context:"user.id",name:"updated_by")
+}

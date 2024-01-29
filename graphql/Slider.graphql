@@ -1,0 +1,57 @@
+"Account of a person who utilizes this application."
+type Slider {
+    "Unique primary key."
+    id: ID!
+    title: String
+    image: String
+    link: String
+    description: String
+    content: String
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    slider(
+      "Search by primary key."
+      id: ID @eq
+    ): Slider @find
+
+    all_sliders: [Slider!]! @all
+
+    sliders(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["title"])
+    ): [Slider!]! @paginate(defaultCount: 10)
+}
+
+extend type Mutation {
+    createSlider(
+        title: String
+        image: Upload
+        link: String
+        description: String
+        content: String
+    ): Slider @field(resolver: "App\\GraphQL\\Mutations\\Slider\\Create")
+
+    updateSlider(
+        id: ID!
+        title: String
+        image: Upload
+        link: String
+        description: String
+        content: String
+    ): Slider @guard @field(resolver: "App\\GraphQL\\Mutations\\Slider\\Update")
+    
+    deleteSlider(id: ID!): Slider
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+}
+
+

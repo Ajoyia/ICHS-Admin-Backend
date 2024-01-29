@@ -1,0 +1,46 @@
+"Account of a person who utilizes this application."
+type AwardType {
+    "Unique primary key."
+    id: ID!
+    title: String
+    description:String
+    nominees:[AwardNominee] @hasMany
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}
+
+extend type Query {
+    
+    award_types(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["title"])
+    ): [AwardType!]! @paginate(defaultCount: 10)
+
+    all_award_types:[AwardType!]! @all
+
+    award_type(id: ID @eq): AwardType @find
+
+}
+
+extend type Mutation {
+    createAwardType(
+        title: String
+        description:String
+    ): AwardType @guard @create @inject(context: "user.id", name: "created_by")
+
+    updateAwardType(
+        id: ID!
+        description:String
+        title: String
+        description:String
+    ): AwardType @guard @update @inject(context: "user.id", name: "updated_by")
+    
+    deleteAwardType(id: ID!): AwardType
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+}

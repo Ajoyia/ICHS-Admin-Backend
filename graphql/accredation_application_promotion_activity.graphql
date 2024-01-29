@@ -1,0 +1,41 @@
+"Account of a person who utilizes this application."
+type AccredationApplicationPromotionActivity {
+    "Unique primary key."
+    id: ID!
+    acc_id: Int
+    promotion_activity_id:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_application_promotion_activity(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationApplicationPromotionActivity @find
+
+    all_accredation_application_promotion_activities: [AccredationApplicationPromotionActivity!]! @all
+
+    accredation_application_promotion_activities(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["cme_promotion_activity_id"])
+    ): [AccredationApplicationPromotionActivity!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationApplicationPromotionActivity(
+        promotion_activity_id: Int
+        acc_id: Int
+        ): AccredationApplicationPromotionActivity! @create @guard @inject(context:"user.id",name:"created_by")
+
+    deleteAccredationApplicationPromotionActivity(acc_id: Int,promotion_activity_id:Int): String @guard @inject(context:"user.id",name:"deleted_by") @field(resolver:"App\\GraphQL\\Mutations\\AccredationApplications\\deleteAccredationApplicationPromotionActivity")
+
+    updateAccredationApplicationPromotionActivity(
+        id: ID!
+        promotion_activity_id: Int
+        acc_id: Int): AccredationApplicationPromotionActivity! @update @guard @inject(context:"user.id",name:"updated_by")
+}

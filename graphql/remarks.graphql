@@ -1,0 +1,55 @@
+
+"Account of a person who utilizes this application."
+type Remark {
+    "Unique primary key."
+    id: ID!
+    user_id:Int
+    user:User @belongsTo
+    model_type: String
+    model_id: Int
+    detail: String
+    remarks_by:String
+    attachment: String
+    model:CMEApplication @morphTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    remark(
+      "Search by primary key."
+      id: ID @eq
+    ): Remark @find
+
+    all_remarks: [Remark!]! @all
+
+     remarks(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["detail"])
+    ): [Remark!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createRemark(
+            model_type: String
+            user_id:Int
+            model_id: Int
+            remarks_by:String
+            detail: String
+            attachment: String
+            ): Remark! @guard @create @inject(context:"user.id",name:"created_by") 
+    updateRemark( id: ID!,
+            user_id:Int
+            model_type: String
+            model_id: Int
+            remarks_by:String
+            detail: String
+            attachment: String): Remark! @update @guard @inject(context:"user.id",name:"updated_by") 
+
+
+
+}

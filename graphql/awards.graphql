@@ -1,0 +1,67 @@
+"Account of a person who utilizes this application."
+type Award {
+    "Unique primary key."
+    id: ID!
+    title: String
+    description: String
+    is_show_result: Int
+    is_voting_allowed: Int
+    award_date: DateTime
+    nominees: [AwardNominee] @hasMany
+    nominee_votes: [NomineeVote] @hasMany
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    deleted_at: DateTime
+    updated_at: DateTime
+}
+
+extend type Query {
+    awards(
+        orderBy: [OrderByClause!]! @orderBy
+        where: _ @whereConditions(columns: ["title"])
+    ): [Award!]! @paginate(defaultCount: 10)
+
+    all_awards: [Award!]! @all
+
+    current_award_nominees(
+        award_type_id: Int
+        award_id: Int
+        orderBy: [OrderByClause!]! @orderBy
+    ): [AwardNominee]
+        @paginate(
+            builder: "App\\GraphQL\\Queries\\Award\\getCurrentAwardNominees"
+        )
+
+    award(id: ID @eq): Award @find
+    getAward: Award @field(resolver: "App\\GraphQL\\Queries\\Award\\getAward")
+}
+
+extend type Mutation {
+    createAward(
+        title: String
+        description: String
+        is_show_result: Int
+        is_voting_allowed: Int
+        award_date: Date
+    ): Award @field(resolver: "App\\GraphQL\\Mutations\\Awards\\Create")
+
+    declareWinner(nominee_id: Int, award_id: Int, award_type_id: Int): String
+        @field(resolver: "App\\GraphQL\\Mutations\\Awards\\declareWinner")
+
+    updateAward(
+        id: ID!
+        description: String
+        title: String
+        description: String
+        is_show_result: Int
+        is_voting_allowed: Int
+        award_date: DateTime
+    ): Award @guard @field(resolver: "App\\GraphQL\\Mutations\\Awards\\Update")
+
+    deleteAward(id: ID!): Award
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+}

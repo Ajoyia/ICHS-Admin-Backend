@@ -1,0 +1,31 @@
+type Rating{
+    id: ID!
+    model_type: String
+    model_id: Int
+    rating:Int
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    model:IvlnCourse @morphTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    rating(
+      id: ID @eq
+    ): Rating @find
+
+    all_ratings: [Rating!]! @all
+
+
+}
+extend type Mutation {
+
+    # createRating(model_type: String!,model_id: Int!,rating:Int,status:Int): Rating! @create  @guard @inject(context:"user.id",name:"created_by")
+    createRating(model_type: String!,model_id: Int!,rating:Int,status:Int): Rating @field(resolver:"App\\GraphQL\\Mutations\\Rating\\Create")
+    updateRating(id: ID!model_type: String!,model_id: Int!,rating:Int,status:Int): Rating! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteRating(id: ID!): Rating! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

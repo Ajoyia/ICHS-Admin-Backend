@@ -1,0 +1,34 @@
+
+type CMELocation {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: Int
+    cme_application_id: Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_location(
+      "Search by primary key."
+      id: ID @eq
+    ): CMELocation @find
+
+    all_cme_locations: [CMELocation!]! @all
+
+    cme_locations(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMELocation!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMELocation(name:  String,status: Int,cme_application_id: Int): CMELocation! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMELocation(id: ID!): CMELocation! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMELocation(id: ID!,name:  String,status: Int,cme_application_id: Int): CMELocation! @update @guard @inject(context:"user.id",name:"updated_by")
+}

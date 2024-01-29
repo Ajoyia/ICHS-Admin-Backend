@@ -1,0 +1,39 @@
+type IvlnFavorite{
+    id: ID!
+    model_type: String
+    model_id: Int
+    model:Favoriteable @morphTo
+    user:User @belongsTo
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+union Favoriteable=IvlnCourse | IvlnSection | HealthInnovationInitiative | JournalApplication
+
+extend type Query{
+    ivlnFavorite(
+        model_type:String @eq
+        model_id:Int @eq
+        user_id:ID @eq
+    ):IvlnFavorite @find
+    
+    ivlnFavorites(
+        model_type:String @eq
+        user_id:ID @eq
+    ):[IvlnFavorite!] @all
+}
+
+extend type Mutation {
+    createIvlnFavorite(
+        model_type:String
+        model_id:Int
+    ):IvlnFavorite! @guard @field(resolver:"App\\GraphQL\\Mutations\\IVLNFavorites\\CreateIVLNFavorite")
+
+    deleteIvlnFavorite(
+        model_type:String
+        model_id:Int
+    ):IvlnFavorite! @guard @field(resolver:"App\\GraphQL\\Mutations\\IVLNFavorites\\DeleteIVLNFavorite")
+}

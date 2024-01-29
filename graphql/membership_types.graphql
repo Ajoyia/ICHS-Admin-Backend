@@ -1,0 +1,31 @@
+
+type MembershipType {
+    id:ID!
+    name:String!
+    status:Int
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    membership_type(
+      id: ID @eq
+    ): MembershipType @find
+
+    all_membership_types: [MembershipType!]! @all
+    
+    membership_types(
+        orderBy: [OrderByClause!]! @orderBy,
+        
+        where:_@whereConditions(columns:["name"])
+    ): [MembershipType!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createMembershipType(name: String!,status: Int!): MembershipType! @create  @guard @inject(context:"user.id",name:"created_by")  
+    updateMembershipType(id: ID!,name: String,status: Int): MembershipType! @update @guard @inject(context:"user.id",name:"updated_by")
+    deleteMembershipType(id: ID!): MembershipType! @guard @delete @inject(context:"user.id",name:"deleted_by")
+}

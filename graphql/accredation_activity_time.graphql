@@ -1,0 +1,29 @@
+type AccredationActivityTime {
+    id: ID!
+    start_time: DateTime
+    end_time: DateTime
+    AccredationApplication: AccredationApplication @belongsTo
+    createdBy: User @belongsTo
+    updatedBy: User @belongsTo
+    deletedBy: User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Mutation {
+    createAccredationActivityTime(
+        cme_application_id: ID!
+        start_time: DateTime
+        end_time: DateTime
+    ): String
+        @guard
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\AccredationActivityTime\\createAccredationActivityTime"
+        )
+
+    deleteAccredationActivityTime(id: ID!): AccredationActivityTime!
+        @delete
+        @guard
+        @inject(context: "user.id", name: "deleted_by")
+}

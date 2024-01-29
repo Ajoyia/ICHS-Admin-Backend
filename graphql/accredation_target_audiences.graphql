@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type AccredationTargetAudience {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    accredation_target_audience(
+      "Search by primary key."
+      id: ID @eq
+    ): AccredationTargetAudience @find
+
+    all_accredation_target_audiences: [AccredationTargetAudience!]! @all
+
+    accredation_target_audiences(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [AccredationTargetAudience!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createAccredationTargetAudience(name:  String!,status: Int): AccredationTargetAudience! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteAccredationTargetAudience(id: ID!): AccredationTargetAudience! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateAccredationTargetAudience(id: ID!,name:String,status: Int): AccredationTargetAudience! @update @guard @inject(context:"user.id",name:"updated_by")
+}

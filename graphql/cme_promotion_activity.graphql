@@ -1,0 +1,34 @@
+
+"Account of a person who utilizes this application."
+type CMEPromotionActivity {
+    "Unique primary key."
+    id: ID!
+    name: String
+    status: String
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at:DateTime
+}
+
+extend type Query {
+    "Find a single user by an identifying attribute."
+    cme_promotion_activity(
+      "Search by primary key."
+      id: ID @eq
+    ): CMEPromotionActivity @find
+
+    all_cme_promotion_activities: [CMEPromotionActivity!]! @all
+
+     cme_promotion_activities(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ): [CMEPromotionActivity!]! @paginate(defaultCount: 10)
+}
+extend type Mutation {
+    createCMEPromotionActivity(name:  String!,status: Int): CMEPromotionActivity! @create @guard  @inject(context:"user.id",name:"created_by")
+    deleteCMEPromotionActivity(id: ID!): CMEPromotionActivity! @delete @guard @inject(context:"user.id",name:"deleted_by")
+    updateCMEPromotionActivity(id: ID!,name:String,status: Int): CMEPromotionActivity! @update @guard @inject(context:"user.id",name:"updated_by")
+}

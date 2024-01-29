@@ -1,0 +1,104 @@
+
+type IvlnCourse {
+    id:ID!
+    name:String
+    content:String
+    status:Int
+    model_type:String
+    model_id:Int
+    tempalate_id:Int
+    featured:Int
+    paid:Int
+    views:Int
+    fav:Boolean
+    thumbnail:String
+    allSections:[IvlnSection] @hasMany
+    sections(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","content"])
+    ):[IvlnSection] @hasMany(type: "paginator")
+    allLectures:[Lecture] @hasMany
+    lectures(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["overview","content"])
+    ):[Lecture] @hasMany (type: "paginator")
+    supporter(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name"])
+    ):[IvlnSupporter] @hasMany (type: "paginator")
+    ivlnTags:[IvlnTag!] @belongsToMany
+    specialities:[Specialty] @belongsToMany
+    speakers:[IvlnSpeaker] @hasMany
+    allSupporter:[IvlnSupporter] @hasMany
+    courseRating:[Rating]@morphMany
+    courseFavorite:[IvlnFavorite]@morphMany
+    avgRating:Int @method(name:"avgRating")
+    createdBy:User @belongsTo
+    updatedBy:User @belongsTo
+    deletedBy:User @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+    deleted_at: DateTime
+}
+
+extend type Query {
+    IvlnCourse(
+      id: ID! @eq
+      admin:Boolean
+    ): IvlnCourse @field(resolver:"App\\GraphQL\\Queries\\Courses\\FindCourse") @guard
+
+    all_IvlCourses: [IvlnCourse!]! @all
+
+    IvlnCoursePagination(
+        orderBy: [OrderByClause!]! @orderBy,
+        where:_@whereConditions(columns:["name","content"])
+    ): [IvlnCourse!]! @paginate(defaultCount: 10)
+
+    getCoursesWithLectureVideo(search:String data_count:Int patch:Int): String @guard @field(resolver:"App\\GraphQL\\Queries\\Courses\\ShowCoursesLectureVideo")
+    getFeatutredCoursesWithLectureVideo: String @guard @field(resolver:"App\\GraphQL\\Queries\\Courses\\ShowFeaturedCoursesLectureVideo")
+    getRecommendedCoursesWithLectureVideo: String @guard @field(resolver:"App\\GraphQL\\Queries\\Courses\\ShowRecommendedCoursesLectureVideo")
+    getFilteredCourses(
+        rating:String
+        industries:JSON
+        tags:JSON
+        paid:Int
+        free:Int
+        featured:Int
+        length:String
+        language:JSON
+        type:JSON
+        speakers:JSON
+        sorting:String
+        data_count:Int
+    ):String @guard @field(resolver:"App\\GraphQL\\Queries\\Courses\\GetFilteredCourses")
+}
+
+extend type Mutation {
+    createCourse(
+        name: String!
+        content: String
+        status: Int!
+        model_type:String
+        model_id:Int
+        tempalate_id:Int
+        featured:Int
+        specialities:JSON
+        thumbnail:Upload
+        tags:JSON
+        paid:Int): IvlnCourse!  @guard  @field(resolver:"App\\GraphQL\\Mutations\\IVLNCourses\\CreateIVLNCourse")
+    updateCourse(
+        id: ID!
+        name: String
+        content: String
+        status: Int
+        model_type:String
+        model_id:Int
+        tempalate_id:Int
+        featured:Int
+        specialities:JSON
+        thumbnail:Upload
+        tags:JSON,
+        paid:Int): IvlnCourse! @field(resolver:"App\\GraphQL\\Mutations\\IVLNCourses\\UpdateIVLNCourse") @guard
+    deleteCourse(id: ID!): IvlnCourse! @guard @delete @inject(context:"user.id",name:"deleted_by")
+
+}
